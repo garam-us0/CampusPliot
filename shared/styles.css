@@ -5,21 +5,30 @@
    stat tiles, switches). Every team page should <link> this file
    FIRST, then its own page-specific stylesheet after it.
    Do not add page-only styles here — put those in that team's own
-   CSS file (login.css / home.css / calendar.css / feature.css).
+   CSS file (login.css / home.css / calendar.css / lostfound.css / etc).
    ============================================================ */
 
 @import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700;800&family=Roboto+Slab:wght@600;700&family=Barlow:wght@600;700;800&family=Cinzel:wght@500;600&display=swap');
+/* Font roles per University of Utah brand system (Google Fonts substitutes for the licensed set):
+   Primary body (Myriad Pro) -> Source Sans 3 | Primary headline (Factoria) -> Roboto Slab
+   Wordmark (Trajan Pro 3, logo-only) -> Barlow (uppercase) | Short impactful copy (Industry) -> Barlow
+   University wordmark text -> Cinzel (closest free stand-in for a Trajan-style Roman caps look) */
 
 :root{
-  --red:#BE0000;
-  --red-dark:#890000;
+  /* University of Utah Core Colors */
+  --red:#BE0000;          /* Utah Red — primary lead color */
+  --red-dark:#890000;     /* Red Rocks accent, used as a deeper red for the topbar */
   --black:#000000;
-  --zion:#707271;
+  --zion:#707271;         /* Zion Cinder Cone */
   --red-tint:#FBE9E9; --red-tint-2:#FDF3F3;
   --ink:#16202B; --ink-2:#000000;
   --muted:#707271; --muted-2:#A9ABAA;
-  --bg:#F5F6F5; --surface:#fff; --border:#E2E6E6;
+  --bg:#F5F6F5; --surface:#fff; --border:#E2E6E6; /* Salt Flat Grey */
   --sidebar-active-bg:#FDECEC;
+  /* Accent families (Granite Peak / Wasatch Sunrise / Mountain Green / Great Salt Lake),
+     kept under ~10% of the UI and used only for category coding, icons and data legends,
+     per the brand guideline; text/icon values are brand-hue-accurate darkened shades for
+     legibility, dots/legends below use the exact official hex. */
   --granite:#45585F; --granite-dot:#708E99; --granite-tint:#EAF1F3;
   --gold:#9E7212; --gold-dot:#FFB81D; --gold-tint:#FFF3DC;
   --green:#43782E; --green-dot:#6CC24A; --green-tint:#EAF6E3;
@@ -83,7 +92,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;}
 .rp-head-title{display:flex;align-items:center;gap:7px;font-weight:700;font-size:13px;color:var(--ink);letter-spacing:.01em;}
 .rp-view-all{font-size:12px;color:var(--muted-2);font-weight:700;}
 
-/* ---------- chip card (home + calendar + feature/myprofile) ---------- */
+/* ---------- chip card (home + calendar + feature pages) ---------- */
 .chip-card{position:relative;background:#fff;border-left:3px solid #ccc;border-radius:0 10px 10px 0;padding:11px 13px 12px;margin-bottom:8px;width:100%;text-align:left;box-shadow:var(--shadow-card);}
 .chip-card--red{background:linear-gradient(135deg,#FDF4F4,#FBE9E9);border-left-color:var(--red);}
 .chip-card--gold{background:linear-gradient(135deg,#FFFCF4,#FFF3DC);border-left-color:var(--gold);}
@@ -101,7 +110,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;}
 .chip-title{font-weight:700;font-size:14px;margin-top:5px;}
 .chip-sub{font-size:12px;color:var(--muted);margin-top:3px;}
 
-/* ---------- buttons + badges (login + calendar add-modal + feature) ---------- */
+/* ---------- buttons + badges (login + calendar add-modal + feature pages) ---------- */
 .badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:6px 13px;border-radius:6px;letter-spacing:.02em;}
 .badge.red{background:var(--red-tint);color:var(--red);}
 .badge.grey{background:#F0F0F2;color:#6B7280;}
@@ -113,20 +122,20 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;}
 .btn-ghost{border:1.5px solid var(--border);color:#525A66;background:#fff;}
 .muted{color:var(--muted-2);}
 
-/* ---------- stat tiles (home + feature/gradepilot) ---------- */
+/* ---------- stat tiles (home + gradepilot) ---------- */
 .stat-row{display:flex;gap:14px;margin-bottom:16px;flex-wrap:wrap;}
 .stat-tile{flex:1;min-width:170px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px 18px;box-shadow:var(--shadow-card);display:flex;align-items:center;justify-content:space-between;}
 .stat-tile .st-label{font-size:11.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;}
 .stat-tile .st-value{font-family:'Roboto Slab',serif;font-size:26px;font-weight:700;margin-top:6px;}
 .stat-icon{width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 
-/* ---------- toggle switch (calendar + feature/myprofile) ---------- */
+/* ---------- toggle switch (calendar + myprofile) ---------- */
 .switch{width:34px;height:19px;border-radius:var(--r-pill);background:#D8D6D4;position:relative;flex-shrink:0;transition:background .15s;}
 .switch.on{background:var(--green);}
 .switch i{position:absolute;top:2px;left:2px;width:15px;height:15px;border-radius:50%;background:#fff;transition:left .15s;box-shadow:0 1px 2px rgba(0,0,0,.3);}
 .switch.on i{left:17px;}
 
-/* ---------- MODAL: event detail (home + calendar + feature) ---------- */
+/* ---------- MODAL: event detail (home + calendar + myprofile) ---------- */
 .modal-overlay{position:fixed;inset:0;background:rgba(20,16,16,.5);display:flex;align-items:center;justify-content:center;z-index:60;padding:20px;}
 .modal-card{width:1000px;max-width:100%;max-height:92vh;background:var(--surface);border-radius:var(--r-lg);box-shadow:0 40px 80px -20px rgba(0,0,0,.4);display:flex;overflow:hidden;}
 .modal-poster{width:340px;flex-shrink:0;position:relative;overflow:hidden;background:linear-gradient(160deg,#EEEFF3,#DEE1E7);display:flex;align-items:center;justify-content:center;}
@@ -147,6 +156,23 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;}
 #toast-host{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:200;display:flex;flex-direction:column;gap:8px;align-items:center;}
 .toast{background:var(--ink);color:#fff;font-size:14px;font-weight:600;padding:12px 22px;border-radius:var(--r-pill);box-shadow:0 14px 30px -10px rgba(0,0,0,.4);opacity:0;transform:translateY(8px);transition:opacity .2s ease, transform .2s ease;}
 .toast.show{opacity:1;transform:translateY(0);}
+
+/* ---------- feature-page header + list rows (used by lostfound/,
+   gradepilot/, courseinsights/, campusjobs/, myprofile/ — kept here
+   since 5 separate team folders all reuse this same header/list look) ---------- */
+.feature-head{display:flex;align-items:center;gap:14px;margin-bottom:20px;}
+.feature-head-icon{width:44px;height:44px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.feature-head h1{font-size:20px;font-weight:700;}
+.feature-head .fh-sub{font-size:13.5px;color:var(--muted);margin-top:2px;}
+.list-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:13px 15px;display:flex;align-items:center;gap:13px;margin-bottom:8px;width:100%;text-align:left;box-shadow:var(--shadow-card);transition:border-color .15s ease;}
+.list-card:hover{border-color:#D9DBE0;cursor:pointer;}
+.list-card .lc-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.list-card .lc-title{font-weight:700;font-size:14.5px;}
+.list-card .lc-sub{font-size:12.5px;color:var(--muted);margin-top:3px;}
+.list-card .lc-tag{margin-left:auto;font-size:11px;font-weight:800;padding:4px 10px;border-radius:6px;flex-shrink:0;}
+.settings-row{display:flex;align-items:center;justify-content:space-between;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:15px 17px;margin-bottom:8px;box-shadow:var(--shadow-card);}
+.settings-row .sr-title{font-weight:700;font-size:14.5px;}
+.settings-row .sr-sub{font-size:12.5px;color:var(--muted);margin-top:2px;}
 
 @media (max-width:960px){
   .app-shell{flex-direction:column;}

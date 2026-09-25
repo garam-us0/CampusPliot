@@ -1,0 +1,4 @@
+/* Campuspilot — GRADEPILOT page only. Loaded after ../shared/styles.css.
+   Shared look-and-feel (topbar, nav rail, buttons, badges, chip cards,
+   .list-card, .stat-row/.stat-tile, .feature-head) already comes from
+   shared/styles.css — only add styles here that are specific to this page. */

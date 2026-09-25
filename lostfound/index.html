@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Campuspilot — Lost &amp; Found</title>
+<link rel="stylesheet" href="../shared/styles.css">
+<link rel="stylesheet" href="lostfound.css">
+</head>
+<body>
+
+<div class="page" id="page-lostfound">
+  <div class="topbar">
+    <div class="topbar-brand">
+      <div class="topbar-logo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><polygon points="21,3.5 3,12.5 10.8,13.2" fill="#D42A2A"/><polygon points="21,3.5 10.8,13.2 13.5,21" fill="#7A0000"/></svg></div>
+      <div class="topbar-name">Campuspilot</div>
+      <div class="topbar-sub"><span>THE UNIVERSITY OF UTAH</span></div>
+    </div>
+    <div class="topbar-right">
+      <div class="topbar-avatar">G</div>Garam (u1621896)
+      <a class="topbar-logout" href="../login/index.html">Logout</a>
+    </div>
+  </div>
+  <div class="breadcrumb-bar">
+    <div class="breadcrumb-left">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M20 20l-4.3-4.3"/></svg>
+      Student Portal &nbsp;›&nbsp; <b>Lost &amp; Found</b>
+    </div>
+    <div class="breadcrumb-right">Fall Semester 2026</div>
+  </div>
+
+  <div class="app-shell">
+    <aside class="nav-rail" id="navrail"></aside>
+
+    <main class="main-col">
+      <div class="feature-head">
+        <div class="feature-head-icon" style="background:var(--granite-tint);">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#708E99" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M20 20l-4.3-4.3"/></svg>
+        </div>
+        <div>
+          <h1>Lost &amp; Found</h1>
+          <div class="fh-sub">Real-time campus property registry and retrieval system</div>
+        </div>
+      </div>
+
+      <!-- =====================================================
+           TODO (Lost & Found team): build this page's content here.
+           Useful shared classes (defined in ../shared/styles.css):
+             .list-card      — a clickable/plain row with icon + title + sub + tag
+             .btn / .btn-red / .btn-ghost — buttons
+             .badge           — small colored label
+             .chip-card       — colored left-border info card
+           ===================================================== -->
+
+    </main>
+
+    <aside class="right-panel">
+      <div class="rp-head"><div class="rp-head-title">TODAY'S SCHEDULE</div></div>
+      <div class="chip-card chip-card--red"><div class="chip-top"><span class="chip-tag">Today · Official</span><span class="chip-dday chip-dday--red">D-DAY</span></div><div class="chip-title">UAC Fall Club Fair</div><div class="chip-sub">14:00 · Central Lawn</div></div>
+      <div class="chip-card chip-card--gold"><div class="chip-top"><span class="chip-tag" style="color:var(--gold);">Free Food</span><span class="chip-dday chip-dday--gold">D-15</span></div><div class="chip-title">Midterm Pizza Social</div><div class="chip-sub">Sep 17 · 12:30 · 1F Student Lounge</div></div>
+      <div style="text-align:center;margin-top:10px;"><a class="rp-view-all" href="../calendar/index.html">View full calendar →</a></div>
+    </aside>
+  </div>
+</div>
+
+<div id="toast-host"></div>
+<script src="../shared/toast.js"></script>
+<script src="../shared/nav.js"></script>
+<script src="lostfound.js"></script>
+<script>
+  mountNavRail('navrail', 'lostfound');
+</script>
+</body>
+</html>

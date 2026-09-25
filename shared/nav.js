@@ -13,14 +13,17 @@ var NAV_ICONS = {
   myprofile:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>'
 };
 
+/* [key, label, badge(unused for now), href] — each key now has its OWN
+   sibling folder/team (lostfound/, gradepilot/, courseinsights/,
+   campusjobs/, myprofile/) instead of one shared "feature" page. */
 var NAV_ORDER = [
   ['home','Home',null,'../home/index.html'],
   ['calendar','Calendar',null,'../calendar/index.html'],
-  ['lostfound','Lost &amp; Found',null,'../feature/index.html?key=lostfound'],
-  ['gradepilot','GradePilot',null,'../feature/index.html?key=gradepilot'],
-  ['courseinsights','Course Insights',null,'../feature/index.html?key=courseinsights'],
-  ['campusjobs','Campus Jobs',null,'../feature/index.html?key=campusjobs'],
-  ['myprofile','My Profile',null,'../feature/index.html?key=myprofile']
+  ['lostfound','Lost &amp; Found',null,'../lostfound/index.html'],
+  ['gradepilot','GradePilot',null,'../gradepilot/index.html'],
+  ['courseinsights','Course Insights',null,'../courseinsights/index.html'],
+  ['campusjobs','Campus Jobs',null,'../campusjobs/index.html'],
+  ['myprofile','My Profile',null,'../myprofile/index.html']
 ];
 
 function renderNavRail(activeKey){
