@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Campuspilot — Sign In</title>
+<link rel="stylesheet" href="../shared/styles.css">
+<link rel="stylesheet" href="login.css">
+</head>
+<body>
+
+<div class="page" id="page-login">
+  <div class="topbar">
+    <div class="topbar-brand">
+      <div class="topbar-logo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><polygon points="21,3.5 3,12.5 10.8,13.2" fill="#D42A2A"/><polygon points="21,3.5 10.8,13.2 13.5,21" fill="#7A0000"/></svg></div>
+      <div class="topbar-name">Campuspilot</div>
+      <div class="topbar-sub"><span>THE UNIVERSITY OF UTAH</span></div>
+    </div>
+    <div class="topbar-right">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v5c0 5 3.4 8.4 8 10 4.6-1.6 8-5 8-10V6l-8-3Z"/></svg>
+      Utah CIS SSO Authentication
+    </div>
+  </div>
+  <div class="breadcrumb-bar">
+    <div class="breadcrumb-left">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+      Identity Verification &nbsp;›&nbsp; <b>Select Portal Access Type</b>
+    </div>
+    <div class="breadcrumb-right">Official Campus Gateway 2026</div>
+  </div>
+
+  <div class="login-wrap">
+    <div class="login-panels">
+      <div class="login-panel">
+        <span class="badge red">Student Portal Access</span>
+        <h2>Student Login</h2>
+        <p>Sign in with your University ID (UNID) to view departmental campus events, RSVP for workshops, and configure personal schedule sync.</p>
+
+        <div class="field-label">UNID (University ID)</div>
+        <div class="field filled">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#BE0000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="14" rx="2"/><circle cx="9.5" cy="11" r="1.8"/><path d="M6.5 16c0-1.7 1.4-2.5 3-2.5s3 .8 3 2.5"/><path d="M15 10h3M15 13h3"/></svg>
+          <input value="u1621896">
+        </div>
+        <div class="field-label">Password</div>
+        <div class="field">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B6AEB4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+          <input type="password" value="uacpilot25">
+        </div>
+
+        <a class="btn btn-red btn-block" href="../home/index.html">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 5l7 7-7 7M4 12h16"/></svg>
+          Sign In with UNID
+        </a>
+        <div class="login-foot">
+          <button class="muted" onclick="showToast('A password reset link has been sent to your registered UNID email')">Forgot Password?</button>
+          <button style="color:var(--red);font-weight:700;" onclick="showToast('Redirecting to Utah CIS Central Login…')">Utah CIS Central Login</button>
+        </div>
+      </div>
+
+      <div class="login-panel">
+        <span class="badge grey">Faculty &amp; Departmental Staff</span>
+        <h2>Administrator Login</h2>
+        <p>Department heads, academic advisors, and student council officers enter with assigned security passcodes to publish and manage campus events.</p>
+
+        <div class="field-label">Departmental 6-Digit Passcode</div>
+        <div class="otp-row">
+          <div class="otp-box filled">•</div><div class="otp-box filled">•</div><div class="otp-box filled">•</div><div class="otp-box cursor">|</div><div class="otp-box"></div><div class="otp-box"></div>
+        </div>
+
+        <a class="btn btn-ink btn-block" href="../home/index.html">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+          Access Departmental Console
+        </a>
+        <div class="login-foot">
+          <button class="muted" onclick="showToast('Department key requests are reviewed by UAC IT within 1 business day')">Request Department Key</button>
+          <span style="font-weight:700;color:var(--ink);">Authorized Staff Only</span>
+        </div>
+      </div>
+    </div>
+    <div class="footer-note">© 2026 Campuspilot · UAC IT Service Desk</div>
+  </div>
+</div>
+
+<div id="toast-host"></div>
+<script src="../shared/toast.js"></script>
+</body>
+</html>

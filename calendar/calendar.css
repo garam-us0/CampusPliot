@@ -1,0 +1,47 @@
+/* Campuspilot — CALENDAR page only. Loaded after shared/styles.css. */
+.cal-topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px;}
+.cal-selects{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.cal-select{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 14px;font-weight:700;font-size:13.5px;display:flex;align-items:center;gap:8px;}
+.cal-today{background:var(--ink-2);color:#fff;border-radius:8px;padding:8px 14px;font-weight:700;font-size:13px;}
+.cal-legend{display:flex;gap:14px;font-size:12px;color:var(--muted);flex-wrap:wrap;font-weight:600;}
+.cal-legend span{display:flex;align-items:center;gap:5px;}
+.dot{width:7px;height:7px;border-radius:50%;display:inline-block;}
+
+.filter-row{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center;}
+.pill{border-radius:8px;padding:9px 15px;font-size:13.5px;font-weight:700;border:1px solid var(--border);background:var(--surface);color:#4B5563;}
+.pill .count{opacity:.55;}
+.pill.active{background:var(--ink-2);color:#fff;border-color:var(--ink-2);}
+.pill.active.red{background:var(--red-tint);color:var(--red);border-color:#F5D0D0;}
+.pill-toggle{display:flex;align-items:center;gap:9px;border-radius:8px;padding:8px 14px 8px 15px;font-size:13.5px;font-weight:700;background:var(--green-tint);color:var(--green);border:1px solid #D3ECC7;}
+.pill-add{background:var(--ink-2);color:#fff;border-radius:8px;padding:9px 17px;font-size:13.5px;font-weight:700;display:flex;align-items:center;gap:6px;border:1px solid var(--ink-2);}
+
+.cal-grid-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);flex:1;display:flex;flex-direction:column;overflow:hidden;margin-bottom:22px;box-shadow:var(--shadow-card);min-height:520px;}
+.cal-dow{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));border-bottom:1px solid var(--border);background:#FAFAFB;}
+.cal-dow div{padding:10px 12px;font-size:11.5px;font-weight:700;color:var(--muted-2);letter-spacing:.03em;}
+.cal-dow div.sun{color:var(--red);}
+.cal-body{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));grid-auto-rows:1fr;flex:1;}
+.cal-cell{border-right:1px solid var(--border);border-bottom:1px solid var(--border);padding:7px;min-height:82px;}
+.cal-cell.today{background:var(--red-tint-2);}
+.cal-cell .date-row{display:flex;justify-content:space-between;align-items:center;}
+.cal-date{font-size:12.5px;font-weight:700;color:#525A66;}
+.cal-date.dim{color:#DDDFE3;font-weight:400;}
+.today-chip{background:var(--red);color:#fff;font-size:9px;font-weight:800;padding:2px 7px;border-radius:4px;letter-spacing:.03em;}
+.dday-chip{background:var(--gold);color:#fff;font-size:9px;font-weight:800;padding:2px 7px;border-radius:4px;}
+
+.ev-chip{margin-top:4px;font-size:10.5px;font-weight:700;padding:2px 6px 2px 7px;border-left:3px solid #ccc;background:#F6F6F8;border-radius:3px;display:block;width:100%;text-align:left;line-height:1.45;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ev-chip--official{border-left-color:var(--granite);background:#F3F6F7;color:#3C4B52;}
+.ev-chip--rsvp{border-left-color:var(--red);background:var(--red-tint);color:var(--red-dark);font-weight:800;}
+.ev-chip--food{border-left-color:var(--gold);background:var(--gold-tint);color:#7A5306;}
+.ev-chip--personal{border-left-color:var(--green);background:var(--green-tint);color:#2C5A1E;}
+.ev-chip.clickable{cursor:pointer;transition:filter .1s;}
+.ev-chip.clickable:hover{filter:brightness(.96);}
+.ev-chip.chip-hidden{display:none;}
+
+/* ---------- MODAL: add schedule (calendar only) ---------- */
+.add-card{width:420px;max-width:100%;background:var(--surface);border-radius:var(--r-lg);padding:26px 26px 22px;box-shadow:0 40px 80px -20px rgba(0,0,0,.4);}
+.add-card h3{font-size:18px;font-weight:700;margin-bottom:4px;}
+.add-card .add-sub{font-size:13.5px;color:var(--muted);margin-bottom:18px;font-family:'Source Sans 3';}
+.add-field{margin-bottom:14px;}
+.add-field label{font-size:12px;font-weight:700;color:#525A66;display:block;margin-bottom:6px;}
+.add-field input, .add-field select{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:11px 13px;font-size:14.5px;font-family:inherit;color:var(--ink);background:#fff;}
+.add-actions{display:flex;gap:10px;margin-top:18px;}

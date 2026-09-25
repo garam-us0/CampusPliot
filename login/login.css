@@ -1,0 +1,20 @@
+/* Campuspilot — LOGIN page only. Loaded after shared/styles.css. */
+.login-wrap{display:flex;flex-direction:column;align-items:center;padding:60px 20px 40px;flex:1;}
+.login-panels{display:flex;flex-wrap:wrap;justify-content:center;gap:22px;max-width:900px;}
+.login-panel{width:410px;max-width:100%;background:var(--surface);padding:34px 32px 28px;border-radius:var(--r-lg);border:1px solid var(--border);box-shadow:var(--shadow-card);}
+.login-panel h2{margin:14px 0 8px;font-weight:700;font-size:24px;}
+.login-panel p{margin:0 0 22px;font-size:14px;color:var(--muted);line-height:1.6;font-family:'Source Sans 3';}
+.field-label{font-size:12px;font-weight:700;color:#525A66;margin-bottom:7px;letter-spacing:.02em;}
+.field{display:flex;align-items:center;gap:10px;border:1.5px solid var(--border);border-radius:8px;padding:12px 15px;margin-bottom:16px;background:#fff;}
+.field.filled{border-color:var(--red);}
+.field input{border:none;outline:none;background:none;font-size:15px;color:var(--ink);width:100%;font-family:inherit;}
+.otp-row{display:flex;gap:8px;margin-bottom:22px;}
+.otp-box{width:44px;height:48px;border:1.5px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;color:var(--red);background:#fff;}
+.otp-box.filled{border-color:var(--red);}
+.otp-box.cursor{border-color:var(--ink);}
+.login-foot{display:flex;justify-content:space-between;margin-top:18px;font-size:13px;}
+.footer-note{margin-top:30px;font-size:12.5px;color:var(--muted-2);}
+
+@media (max-width:960px){
+  .login-panels{flex-direction:column;align-items:center;}
+}
