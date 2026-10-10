@@ -43,21 +43,150 @@
         </div>
       </div>
 
-      <!-- =====================================================
-           TODO (GradePilot team): build this page's content here.
-           Useful shared classes (defined in ../shared/styles.css):
-             .stat-row / .stat-tile   — the 3-tile GPA/credit summary row
-             .list-card               — course rows
-           ===================================================== -->
+      <!-- course pill switcher — hidden until the first course is added -->
+      <div class="gp-toolbar hidden" id="gpToolbar">
+        <div class="gp-pills" id="gpPills"></div>
+        <button class="gp-add-course-btn" onclick="gpShowUpload()">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+          Add Course
+        </button>
+      </div>
+
+      <!-- ===================== UPLOAD VIEW ===================== -->
+      <div class="gp-upload-card" id="gpUploadView">
+        <div class="gp-upload-head">
+          <span class="gp-eyebrow">Start your grade plan</span>
+          <button class="gp-cancel-btn hidden" id="gpCancelBtn" onclick="gpShowDashboard()">Cancel
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6l-12 12"/></svg>
+          </button>
+        </div>
+
+        <div class="gp-upload-grid">
+          <div class="gp-upload-steps">
+            <h2>Start with your syllabus.</h2>
+            <p class="gp-lede">Upload one course syllabus and GradePilot builds the grading model for you — no manual setup, formulas, or cutoff hunting.</p>
+
+            <div class="gp-step"><span class="gp-step-num">01</span><div><h5>Extract course rules</h5><p>Weights, drop policies, penalties, and grading cutoffs.</p></div></div>
+            <div class="gp-step"><span class="gp-step-num">02</span><div><h5>Add completed scores</h5><p>Enter what you've earned and leave upcoming work blank.</p></div></div>
+            <div class="gp-step"><span class="gp-step-num">03</span><div><h5>Choose a target grade</h5><p>See the minimum score needed across remaining work.</p></div></div>
+          </div>
+
+          <div class="gp-dropzone-card">
+            <div class="gp-dropzone-head">
+              <div class="gp-dropzone-head-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg></div>
+              <div><h4>Upload course syllabus</h4><p>PDF format · up to 8 pages analyzed</p></div>
+            </div>
+
+            <div class="gp-dropzone" id="gpDropzone" onclick="document.getElementById('gpFileInput').click()" ondrop="gpHandleDrop(event)" ondragover="event.preventDefault()">
+              <input type="file" id="gpFileInput" class="hidden" accept=".pdf" onchange="gpHandleFileSelected(event)">
+              <div class="gp-dropzone-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg></div>
+              <p class="gp-dz-title">Drop your syllabus PDF here</p>
+              <p class="gp-dz-sub">or click to browse from your computer</p>
+              <p class="gp-dz-staged hidden" id="gpStagedName"></p>
+            </div>
+
+            <div class="gp-samples">
+              <span>Quick load samples:</span>
+              <div>
+                <button type="button" onclick="gpLoadSample('OSC2030')">OSC 2030</button>·
+                <button type="button" onclick="gpLoadSample('CS3500')">CS 3500</button>·
+                <button type="button" onclick="gpLoadSample('WRTG2010')">WRTG 2010</button>
+              </div>
+            </div>
+
+            <button class="btn btn-red btn-block" id="gpAnalyzeBtn" onclick="gpStartAnalysis()">Analyze Syllabus</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================== DASHBOARD VIEW ===================== -->
+      <div class="gp-dash-grid hidden" id="gpDashboardView">
+
+        <div class="gp-dash-main">
+          <!-- syllabus status card -->
+          <div class="gp-card">
+            <div class="gp-card-head">
+              <div><h3>Syllabus Upload</h3><p>AI extracts weights, hidden rules, and exact letter-grade cutoffs</p></div>
+              <span class="gp-ai-tag">AI Parsed</span>
+            </div>
+            <div class="gp-file-chip">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#43782E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg>
+              <span id="gpActiveFileName"></span>
+            </div>
+            <div class="gp-card-foot">
+              <span class="gp-applied">✓ Applied to <b id="gpAppliedCourse"></b></span>
+              <button onclick="gpShowUpload()">Replace File</button>
+            </div>
+            <button class="btn btn-red btn-block" onclick="gpStartAnalysis()">Re-analyze with AI</button>
+          </div>
+
+          <!-- assessment table card -->
+          <div class="gp-card">
+            <h2 class="gp-course-title" id="gpCourseTitle"></h2>
+            <p class="muted gp-course-instructor" id="gpCourseInstructor"></p>
+            <p class="gp-table-hint">Enter completed scores below. Leave upcoming work blank.</p>
+
+            <div class="gp-table-head">
+              <span>Assessment</span><span>Wt.</span><span>Score</span><span>Status</span>
+            </div>
+            <div id="gpRows"></div>
+
+            <div class="gp-table-foot">
+              <button onclick="gpPromptNewAssessment()">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+                Add Custom Assessment
+              </button>
+              <span id="gpWeightTotal" class="muted"></span>
+            </div>
+          </div>
+
+          <!-- estimated GPA card -->
+          <div class="gp-card gp-gpa-card">
+            <div class="gp-gpa-top">
+              <div><h4>Estimated Semester GPA</h4><p class="muted" id="gpGpaCourse"></p></div>
+              <div class="gp-gpa-value"><span id="gpGpaVal">—</span><span class="gp-gpa-max">/ 4.0</span></div>
+            </div>
+            <div class="gp-progress"><div class="gp-progress-bar" id="gpGpaBar"></div></div>
+          </div>
+        </div>
+
+        <!-- target grade sidebar -->
+        <aside class="gp-card gp-dash-side">
+          <div class="gp-card-head">
+            <h3>Target Grade</h3>
+            <span class="muted" id="gpRightCourseBadge"></span>
+          </div>
+
+          <div class="gp-grade-grid" id="gpGradeGrid"></div>
+
+          <div class="gp-target-box">
+            <span class="gp-target-label">Minimum needed on each pending assessment</span>
+            <div class="gp-big-num"><span id="gpBigNum">—</span><span class="gp-pts">pts</span></div>
+            <div id="gpGoalBadge"></div>
+            <p class="muted gp-floorceil" id="gpFloorCeil"></p>
+          </div>
+
+          <div class="gp-shared-list">
+            <div class="gp-shared-head"><span>Shared minimum score</span><span class="gp-shared-target" id="gpSharedLabel"></span></div>
+            <p class="gp-shared-sub">Earn at least this score on every pending assessment.</p>
+            <div id="gpSharedRows"></div>
+          </div>
+        </aside>
+      </div>
 
     </main>
+  </div>
+</div>
 
-    <aside class="right-panel">
-      <div class="rp-head"><div class="rp-head-title">TODAY'S SCHEDULE</div></div>
-      <div class="chip-card chip-card--red"><div class="chip-top"><span class="chip-tag">Today · Official</span><span class="chip-dday chip-dday--red">D-DAY</span></div><div class="chip-title">UAC Fall Club Fair</div><div class="chip-sub">14:00 · Central Lawn</div></div>
-      <div class="chip-card chip-card--gold"><div class="chip-top"><span class="chip-tag" style="color:var(--gold);">Free Food</span><span class="chip-dday chip-dday--gold">D-15</span></div><div class="chip-title">Midterm Pizza Social</div><div class="chip-sub">Sep 17 · 12:30 · 1F Student Lounge</div></div>
-      <div style="text-align:center;margin-top:10px;"><a class="rp-view-all" href="../calendar/index.html">View full calendar →</a></div>
-    </aside>
+<!-- AI loading overlay -->
+<div class="gp-overlay hidden" id="gpOverlay">
+  <div class="gp-overlay-card">
+    <div class="gp-overlay-icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#BE0000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3Z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8L19 15Z"/></svg>
+    </div>
+    <h4 id="gpOverlayTitle">Extracting course rules...</h4>
+    <p id="gpOverlaySub">Parsing weights, drop policies &amp; grade cutoffs</p>
+    <div class="gp-overlay-track"><div class="gp-overlay-bar" id="gpOverlayBar"></div></div>
   </div>
 </div>
 
