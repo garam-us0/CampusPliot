@@ -11,30 +11,9 @@ var ICONS = {
 };
 var COLOR = { red:'#BE0000', granite:'#708E99', teal:'#3ABFC0', gold:'#FFB81D', green:'#6CC24A' };
 var TINT = { red:'var(--red-tint)', granite:'var(--granite-tint)', teal:'var(--teal-tint)', gold:'var(--gold-tint)', green:'var(--green-tint)' };
-var EVENTS_DETAIL = {
-  techcareer: {
-    badge:'Information Systems &amp; Career Services',
-    title:'2026 Tech Career Night',
-    rows:[
-      {label:'Date/Time', value:'Friday, Sep 18, 2026 · 17:00 – 19:30', icon:'calendar', color:'red'},
-      {label:'Location', value:'U821 Grand Auditorium (UAC Building 8F)', icon:'pin', color:'granite'},
-      {label:'Host', value:'UAC IS Student Council &amp; Career Center', icon:'people', color:'teal'},
-      {label:'Contact', value:'career-uac@utah.edu', icon:'mail', color:'gold'},
-      {label:'Perks', value:'Pizza catering &amp; official UAC tech sticker pack', icon:'food', color:'green'}
-    ]
-  },
-  careerfair: {
-    badge:'Career Services &amp; IS Department',
-    title:'2026 Career Fair Pre-Registration',
-    rows:[
-      {label:'Date/Time', value:'Friday, Sep 11, 2026 · 14:00 – 17:00', icon:'calendar', color:'red'},
-      {label:'Location', value:'IGC Gymnasium', icon:'pin', color:'granite'},
-      {label:'Host', value:'UAC Career Center', icon:'people', color:'teal'},
-      {label:'Contact', value:'career-uac@utah.edu', icon:'mail', color:'gold'},
-      {label:'Perks', value:'Free resume review &amp; company swag', icon:'food', color:'green'}
-    ]
-  }
-};
+/* No demo events are pre-loaded — real campus events get added here
+   (or wired up from a real events source) as they're published. */
+var EVENTS_DETAIL = {};
 function openModal(key){
   var e = EVENTS_DETAIL[key];
   if(!e) return;

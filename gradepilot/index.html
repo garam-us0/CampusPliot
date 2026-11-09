@@ -6,6 +6,9 @@
 <title>Campuspilot — GradePilot</title>
 <link rel="stylesheet" href="../shared/styles.css">
 <link rel="stylesheet" href="gradepilot.css">
+<!-- pdf.js — pulls plain text out of an uploaded syllabus PDF client-side,
+     before sending that text to the real grading-rules API. -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 </head>
 <body>
 
@@ -17,8 +20,8 @@
       <div class="topbar-sub"><span>THE UNIVERSITY OF UTAH</span></div>
     </div>
     <div class="topbar-right">
-      <div class="topbar-avatar">G</div>Garam (u1621896)
-      <a class="topbar-logout" href="../login/index.html">Logout</a>
+      <div class="topbar-avatar">G</div><span class="topbar-username">Garam (u1621896)</span>
+      <a class="topbar-logout" href="../login/index.html" onclick="logout();return false;">Logout</a>
     </div>
   </div>
   <div class="breadcrumb-bar">
@@ -43,16 +46,20 @@
         </div>
       </div>
 
-      <!-- course pill switcher — hidden until the first course is added -->
       <div class="gp-toolbar hidden" id="gpToolbar">
         <div class="gp-pills" id="gpPills"></div>
-        <button class="gp-add-course-btn" onclick="gpShowUpload()">
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
-          Add Course
-        </button>
+        <div class="gp-toolbar-actions">
+          <button class="gp-add-course-btn gp-clear-btn" onclick="gpClearAll()" title="Delete every saved course and score on this device">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg>
+            Clear All
+          </button>
+          <button class="gp-add-course-btn" onclick="gpShowUpload()">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+            Add Course
+          </button>
+        </div>
       </div>
 
-      <!-- ===================== UPLOAD VIEW ===================== -->
       <div class="gp-upload-card" id="gpUploadView">
         <div class="gp-upload-head">
           <span class="gp-eyebrow">Start your grade plan</span>
@@ -85,25 +92,13 @@
               <p class="gp-dz-staged hidden" id="gpStagedName"></p>
             </div>
 
-            <div class="gp-samples">
-              <span>Quick load samples:</span>
-              <div>
-                <button type="button" onclick="gpLoadSample('OSC2030')">OSC 2030</button>·
-                <button type="button" onclick="gpLoadSample('CS3500')">CS 3500</button>·
-                <button type="button" onclick="gpLoadSample('WRTG2010')">WRTG 2010</button>
-              </div>
-            </div>
-
             <button class="btn btn-red btn-block" id="gpAnalyzeBtn" onclick="gpStartAnalysis()">Analyze Syllabus</button>
           </div>
         </div>
       </div>
 
-      <!-- ===================== DASHBOARD VIEW ===================== -->
       <div class="gp-dash-grid hidden" id="gpDashboardView">
-
         <div class="gp-dash-main">
-          <!-- syllabus status card -->
           <div class="gp-card">
             <div class="gp-card-head">
               <div><h3>Syllabus Upload</h3><p>AI extracts weights, hidden rules, and exact letter-grade cutoffs</p></div>
@@ -120,14 +115,19 @@
             <button class="btn btn-red btn-block" onclick="gpStartAnalysis()">Re-analyze with AI</button>
           </div>
 
-          <!-- assessment table card -->
           <div class="gp-card">
-            <h2 class="gp-course-title" id="gpCourseTitle"></h2>
-            <p class="muted gp-course-instructor" id="gpCourseInstructor"></p>
+            <div class="gp-course-head-row">
+              <div class="gp-course-title-block">
+                <h2 class="gp-course-title" id="gpCourseTitle"></h2>
+                <p class="muted gp-course-instructor" id="gpCourseInstructor"></p>
+              </div>
+              <div class="gp-course-grade-badge hidden" id="gpCourseGradeBadge"></div>
+            </div>
+            <div class="gp-course-rules" id="gpCourseRules"></div>
             <p class="gp-table-hint">Enter completed scores below. Leave upcoming work blank.</p>
 
             <div class="gp-table-head">
-              <span>Assessment</span><span>Wt.</span><span>Score</span><span>Status</span>
+              <span>Assessment</span><span>Wt.</span><span>Score</span><span>Gr.</span>
             </div>
             <div id="gpRows"></div>
 
@@ -140,7 +140,6 @@
             </div>
           </div>
 
-          <!-- estimated GPA card -->
           <div class="gp-card gp-gpa-card">
             <div class="gp-gpa-top">
               <div><h4>Estimated Semester GPA</h4><p class="muted" id="gpGpaCourse"></p></div>
@@ -150,7 +149,6 @@
           </div>
         </div>
 
-        <!-- target grade sidebar -->
         <aside class="gp-card gp-dash-side">
           <div class="gp-card-head">
             <h3>Target Grade</h3>
@@ -170,15 +168,17 @@
             <div class="gp-shared-head"><span>Shared minimum score</span><span class="gp-shared-target" id="gpSharedLabel"></span></div>
             <p class="gp-shared-sub">Earn at least this score on every pending assessment.</p>
             <div id="gpSharedRows"></div>
+            <div class="gp-projected-row hidden" id="gpProjectedRow">
+              <span>Current projected</span>
+              <div class="gp-course-grade-badge" id="gpProjectedBadge"></div>
+            </div>
           </div>
         </aside>
       </div>
-
     </main>
   </div>
 </div>
 
-<!-- AI loading overlay -->
 <div class="gp-overlay hidden" id="gpOverlay">
   <div class="gp-overlay-card">
     <div class="gp-overlay-icon">
@@ -191,10 +191,12 @@
 </div>
 
 <div id="toast-host"></div>
+<script src="../shared/session.js"></script>
 <script src="../shared/toast.js"></script>
 <script src="../shared/nav.js"></script>
 <script src="gradepilot.js"></script>
 <script>
+  var SESSION = requireSession();
   mountNavRail('navrail', 'gradepilot');
 </script>
 </body>

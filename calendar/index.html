@@ -17,8 +17,8 @@
       <div class="topbar-sub"><span>THE UNIVERSITY OF UTAH</span></div>
     </div>
     <div class="topbar-right">
-      <div class="topbar-avatar">G</div>Garam (u1621896)
-      <a class="topbar-logout" href="../login/index.html">Logout</a>
+      <div class="topbar-avatar">G</div><span class="topbar-username">Garam (u1621896)</span>
+      <a class="topbar-logout" href="../login/index.html" onclick="logout();return false;">Logout</a>
     </div>
   </div>
   <div class="breadcrumb-bar">
@@ -48,10 +48,10 @@
       </div>
 
       <div class="filter-row" id="filter-row">
-        <button class="pill active" data-filter="all">All Campus Events <span class="count">(12)</span></button>
-        <button class="pill red" data-filter="rsvp">🔖 My RSVPs <span class="count">(2)</span></button>
-        <button class="pill" data-filter="food">🍴 Free Food <span class="count">(2)</span></button>
-        <button class="pill" data-filter="career">💼 Career &amp; Jobs <span class="count">(4)</span></button>
+        <button class="pill active" data-filter="all">All Campus Events <span class="count">(0)</span></button>
+        <button class="pill red" data-filter="rsvp">🔖 My RSVPs <span class="count">(0)</span></button>
+        <button class="pill" data-filter="food">🍴 Free Food <span class="count">(0)</span></button>
+        <button class="pill" data-filter="career">💼 Career &amp; Jobs <span class="count">(0)</span></button>
         <button class="pill-toggle" id="personal-toggle" onclick="togglePersonal()">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="3"/><path d="M2.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/></svg>
           Personal Schedule
@@ -66,35 +66,35 @@
         </div>
         <div class="cal-body" id="cal-body">
           <div class="cal-cell"><div class="cal-date dim">31</div></div>
-          <div class="cal-cell" data-date="1"><div class="cal-date">1</div><span class="ev-chip ev-chip--official" data-cat="official">Fall Convocation</span></div>
-          <div class="cal-cell today" data-date="2"><div class="date-row"><span class="cal-date" style="color:#BE0000;">2</span><span class="today-chip">TODAY</span></div><span class="ev-chip ev-chip--official" data-cat="official">UAC Fall Club Fair</span></div>
-          <div class="cal-cell" data-date="3"><div class="cal-date">3</div><span class="ev-chip ev-chip--personal" data-cat="personal">[Personal] CS 3500 Study Group</span></div>
-          <div class="cal-cell" data-date="4"><div class="cal-date">4</div><span class="ev-chip ev-chip--official" data-cat="official">Global Leader Forum</span></div>
-          <div class="cal-cell" data-date="5"><div class="cal-date">5</div><span class="ev-chip ev-chip--official" data-cat="official">IS Welcome Social</span></div>
+          <div class="cal-cell" data-date="1"><div class="cal-date">1</div></div>
+          <div class="cal-cell today" data-date="2"><div class="date-row"><span class="cal-date" style="color:#BE0000;">2</span><span class="today-chip">TODAY</span></div></div>
+          <div class="cal-cell" data-date="3"><div class="cal-date">3</div></div>
+          <div class="cal-cell" data-date="4"><div class="cal-date">4</div></div>
+          <div class="cal-cell" data-date="5"><div class="cal-date">5</div></div>
           <div class="cal-cell"><div class="cal-date">6</div></div>
 
           <div class="cal-cell" data-date="7"><div class="cal-date">7</div></div>
           <div class="cal-cell" data-date="8"><div class="cal-date">8</div></div>
           <div class="cal-cell" data-date="9"><div class="cal-date">9</div></div>
-          <div class="cal-cell" data-date="10"><div class="cal-date">10</div><span class="ev-chip ev-chip--official" data-cat="official" data-career="1">Resume Clinic</span></div>
-          <div class="cal-cell" data-date="11"><div class="cal-date">11</div><span class="ev-chip ev-chip--rsvp clickable" data-cat="rsvp" data-career="1" onclick="openModal('careerfair')">🔖 Career Fair Pre-Reg</span><span class="ev-chip ev-chip--official" data-cat="official" data-career="1">Alumni Career Talk</span></div>
+          <div class="cal-cell" data-date="10"><div class="cal-date">10</div></div>
+          <div class="cal-cell" data-date="11"><div class="cal-date">11</div></div>
           <div class="cal-cell" data-date="12"><div class="cal-date">12</div></div>
           <div class="cal-cell"><div class="cal-date">13</div></div>
 
           <div class="cal-cell" data-date="14"><div class="cal-date">14</div></div>
-          <div class="cal-cell" data-date="15"><div class="cal-date">15</div><span class="ev-chip ev-chip--personal" data-cat="personal">[Personal] Library Study Session</span></div>
+          <div class="cal-cell" data-date="15"><div class="cal-date">15</div></div>
           <div class="cal-cell" data-date="16"><div class="cal-date">16</div></div>
-          <div class="cal-cell" data-date="17"><div class="cal-date">17</div><span class="ev-chip ev-chip--food" data-cat="food">Pizza Social (1F)</span></div>
-          <div class="cal-cell spot" data-date="18"><div class="date-row"><span class="cal-date">18</span><span class="dday-chip">D-16</span></div><span class="ev-chip ev-chip--rsvp clickable" data-cat="rsvp" data-career="1" onclick="openModal('techcareer')">⭐ Tech Career Night</span><span class="ev-chip ev-chip--official" data-cat="official" data-career="1">Alumni Networking</span></div>
+          <div class="cal-cell" data-date="17"><div class="cal-date">17</div></div>
+          <div class="cal-cell" data-date="18"><div class="cal-date">18</div></div>
           <div class="cal-cell" data-date="19"><div class="cal-date">19</div></div>
           <div class="cal-cell"><div class="cal-date">20</div></div>
 
           <div class="cal-cell" data-date="21"><div class="cal-date">21</div></div>
           <div class="cal-cell" data-date="22"><div class="cal-date">22</div></div>
-          <div class="cal-cell" data-date="23"><div class="cal-date">23</div><span class="ev-chip ev-chip--official" data-cat="official" data-career="1">Startup Pitch Day</span></div>
+          <div class="cal-cell" data-date="23"><div class="cal-date">23</div></div>
           <div class="cal-cell" data-date="24"><div class="cal-date">24</div></div>
-          <div class="cal-cell" data-date="25"><div class="cal-date">25</div><span class="ev-chip ev-chip--official" data-cat="official">SLC Exchange Briefing</span></div>
-          <div class="cal-cell" data-date="26"><div class="cal-date">26</div><span class="ev-chip ev-chip--food" data-cat="food">Coffee &amp; Donuts</span></div>
+          <div class="cal-cell" data-date="25"><div class="cal-date">25</div></div>
+          <div class="cal-cell" data-date="26"><div class="cal-date">26</div></div>
           <div class="cal-cell"><div class="cal-date">27</div></div>
 
           <div class="cal-cell" data-date="28"><div class="cal-date">28</div></div>
@@ -110,21 +110,11 @@
 
     <aside class="right-panel">
       <div class="rp-head"><div class="rp-head-title">🍴 FREE FOOD EVENTS</div></div>
-      <div class="chip-card chip-card--gold"><div class="chip-top"><span class="chip-tag" style="color:var(--gold);">Free Food</span><span class="chip-dday chip-dday--gold">D-15</span></div><div class="chip-title">Midterm Pizza Social</div><div class="chip-sub">Sep 17 · 12:30 PM · 1F Student Lounge</div></div>
-      <div class="chip-card chip-card--gold"><div class="chip-top"><span class="chip-tag" style="color:var(--gold);">Free Food</span><span class="chip-dday chip-dday--gold">D-24</span></div><div class="chip-title">Coffee &amp; Krispy Kreme</div><div class="chip-sub">Sep 26 · 10:00 AM · 5F Career Center</div></div>
+      <div class="muted" style="font-size:12.5px;padding:6px 2px;">No free food events posted yet.</div>
 
       <div class="rp-divider"></div>
-      <div class="rp-head"><div class="rp-head-title">🔖 MY RSVPS</div><span style="font-size:11.5px;color:var(--muted-2);font-weight:700;">(2)</span></div>
-      <button class="chip-card chip-card--red clickable" onclick="openModal('techcareer')">
-        <div class="chip-top"><span class="chip-tag">Confirmed</span><span class="chip-dday chip-dday--red">D-16</span></div>
-        <div class="chip-title">Tech Career Night</div>
-        <div class="chip-sub">Fri, Sep 18 · 17:00 (U821)</div>
-      </button>
-      <button class="chip-card chip-card--red clickable" onclick="openModal('careerfair')">
-        <div class="chip-top"><span class="chip-tag">Confirmed</span><span class="chip-dday chip-dday--red">D-9</span></div>
-        <div class="chip-title">Career Fair Pre-Reg</div>
-        <div class="chip-sub">Fri, Sep 11 · 14:00 (Gym)</div>
-      </button>
+      <div class="rp-head"><div class="rp-head-title">🔖 MY RSVPS</div></div>
+      <div class="muted" style="font-size:12.5px;padding:6px 2px;">You haven't RSVP'd to anything yet.</div>
     </aside>
   </div>
 </div>
@@ -141,7 +131,7 @@
       <h2 id="modal-title">2026 Tech Career Night</h2>
       <div class="detail-rows" id="modal-rows"></div>
       <div style="flex:1;"></div>
-      <div class="modal-rsvp-btn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>Open Google Form RSVP</div>
+      <div class="modal-rsvp-btn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/></svg>Open Google Form RSVP</div>
       <div class="modal-note">Submitted RSVPs display on your calendar with a <b>Red Header</b> badge.</div>
     </div>
   </div>
@@ -172,11 +162,13 @@
 </div>
 
 <div id="toast-host"></div>
+<script src="../shared/session.js"></script>
 <script src="../shared/toast.js"></script>
 <script src="../shared/nav.js"></script>
 <script src="../shared/modal.js"></script>
 <script src="calendar.js"></script>
 <script>
+  var SESSION = requireSession();
   mountNavRail('navrail', 'calendar');
 </script>
 </body>

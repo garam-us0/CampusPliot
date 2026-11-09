@@ -17,14 +17,14 @@
       <div class="topbar-sub"><span>THE UNIVERSITY OF UTAH</span></div>
     </div>
     <div class="topbar-right">
-      <div class="topbar-avatar">G</div>Garam (u1621896)
-      <a class="topbar-logout" href="../login/index.html">Logout</a>
+      <div class="topbar-avatar">G</div><span class="topbar-username">Garam (u1621896)</span>
+      <a class="topbar-logout" href="../login/index.html" onclick="logout();return false;">Logout</a>
     </div>
   </div>
   <div class="breadcrumb-bar">
     <div class="breadcrumb-left">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M20 20l-4.3-4.3"/></svg>
-      Student Portal &nbsp;›&nbsp; <b>Lost &amp; Found</b>
+      Student Portal &nbsp;&rsaquo;&nbsp; <b id="lfCrumb">Lost &amp; Found</b>
     </div>
     <div class="breadcrumb-right">Fall Semester 2026</div>
   </div>
@@ -32,43 +32,228 @@
   <div class="app-shell">
     <aside class="nav-rail" id="navrail"></aside>
 
-    <main class="main-col">
-      <div class="feature-head">
-        <div class="feature-head-icon" style="background:var(--granite-tint);">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#708E99" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M20 20l-4.3-4.3"/></svg>
+    <div class="main-col">
+
+      <!-- ===================== STUDENT VIEW ===================== -->
+      <div id="studentView">
+        <div class="lf-hero">
+          <h1>Lost something on campus?</h1>
+          <p>Search the official UAC registry of found items to reclaim your property.</p>
         </div>
-        <div>
-          <h1>Lost &amp; Found</h1>
-          <div class="fh-sub">Real-time campus property registry and retrieval system</div>
+        <div class="lf-search-row">
+          <select id="lfCategorySelect" onchange="lfSetCategory(this.value)">
+            <option value="all">All Categories</option>
+            <option value="Electronics">Electronics</option>
+            <option value="Keys &amp; Wallets">Keys &amp; Wallets</option>
+            <option value="Books &amp; Study">Books &amp; Study</option>
+            <option value="Clothing">Clothing</option>
+            <option value="Other">Other</option>
+          </select>
+          <input type="text" id="lfSearchInput" placeholder="Search by item name, category, or location..." oninput="lfSetQuery(this.value)">
+          <button onclick="lfRenderStudent()">SEARCH</button>
+        </div>
+        <div class="lf-status-tabs" id="lfStatusTabs"></div>
+        <div class="lf-grid" id="lfGrid"></div>
+      </div>
+
+      <!-- ===================== ADMIN VIEW ===================== -->
+      <div id="adminView" class="hidden">
+        <div class="admin-head-row">
+          <div>
+            <h1>Lost &amp; Found — Inventory</h1>
+            <p>Review and manage all items logged within the UAC Lost &amp; Found registry.</p>
+          </div>
+          <div class="lf-stat-row">
+            <div class="lf-stat-tile"><div class="lf-stat-num" id="statTotal">0</div><div class="lf-stat-label">Total Items</div></div>
+            <div class="lf-stat-tile"><div class="lf-stat-num" id="statPending">0</div><div class="lf-stat-label">Pending</div></div>
+            <div class="lf-stat-tile"><div class="lf-stat-num" id="statCompleted">0</div><div class="lf-stat-label">Completed</div></div>
+          </div>
+        </div>
+
+        <!-- Month view: the registry is browsed one month at a time, like the
+             Calendar page. An item still PENDING (or claim-requested) carries
+             forward into every later month's view until someone picks it up —
+             it's still physically sitting at the desk — but once it's marked
+             Completed it stops carrying forward; it stays on the record for
+             the month it was actually resolved, just not in later months. */ -->
+        <div class="lf-month-bar">
+          <span class="lf-month-bar-label">Viewing</span>
+          <div class="lf-month-selects">
+            <select class="lf-month-select" id="lfYearSelect" onchange="lfChangeViewMonth()"></select>
+            <select class="lf-month-select" id="lfMonthSelect" onchange="lfChangeViewMonth()"></select>
+          </div>
+          <button type="button" class="lf-month-current" id="lfCurrentMonthBtn" onclick="lfJumpToCurrentMonth()">This Month</button>
+          <span class="lf-month-bar-note">Pending items carry forward each month until they're picked up.</span>
+        </div>
+
+        <div class="admin-two-col">
+          <div class="admin-left">
+            <div class="admin-panel">
+              <h2>Register New Item</h2>
+              <div class="lf-field">
+                <label>Item Name</label>
+                <input type="text" id="regName" placeholder="e.g. Blue Hydroflask">
+              </div>
+              <div class="lf-field">
+                <label>Category</label>
+                <select id="regCategory">
+                  <option value="">Select Category</option>
+                  <option value="Electronics">Electronics</option>
+                  <option value="Keys &amp; Wallets">Keys &amp; Wallets</option>
+                  <option value="Books &amp; Study">Books &amp; Study</option>
+                  <option value="Clothing">Clothing</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div class="lf-field">
+                <label>Location Found</label>
+                <input type="text" id="regLocation" placeholder="e.g. Science Building, Room 204">
+              </div>
+              <div class="lf-field">
+                <label>Date Found</label>
+                <div class="mini-date-picker" id="regDatePicker">
+                  <button type="button" class="mini-date-trigger" onclick="lfToggleDatePicker('reg')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="6" width="16" height="14" rx="2"/><path d="M8 4v4M16 4v4M4 10h16"/></svg>
+                    <span id="regDateLabel">Select a date</span>
+                  </button>
+                  <div class="mini-date-pop hidden" id="regDatePop">
+                    <div class="mini-cal-head">
+                      <button type="button" class="mini-cal-nav" onclick="event.stopPropagation();lfShiftMonth('reg',-1)">‹</button>
+                      <div class="mini-cal-title" id="regDateHead"></div>
+                      <button type="button" class="mini-cal-nav" onclick="event.stopPropagation();lfShiftMonth('reg',1)">›</button>
+                    </div>
+                    <div class="mini-grid" id="regDateGrid"></div>
+                  </div>
+                </div>
+                <input type="hidden" id="regDate">
+              </div>
+              <div class="lf-field">
+                <label>Image Upload</label>
+                <div class="file-upload-row">
+                  <input type="file" id="regImage" class="file-upload-input" accept="image/*" onchange="lfHandleImage(this)">
+                  <label for="regImage" class="file-upload-btn">Choose File</label>
+                  <span class="file-upload-name" id="regImageName">No file chosen</span>
+                </div>
+                <div class="lf-img-preview" id="regImgPreview">No image selected</div>
+              </div>
+              <div class="lf-field">
+                <label>Description</label>
+                <textarea id="regDesc" placeholder="Optional description of the item"></textarea>
+              </div>
+              <button class="btn btn-red btn-block" onclick="lfRegisterItem()">Register Item</button>
+            </div>
+            <div class="protocol-note">
+              <strong>Admin Access</strong>
+              Items you register appear immediately in the student search registry. Mark an item Completed once it has been claimed in person at the UAC Lost &amp; Found Desk.
+            </div>
+          </div>
+
+          <div class="admin-right">
+            <div class="admin-panel">
+              <div class="table-toolbar">
+                <select id="adminStatusFilter" onchange="lfSetAdminFilter(this.value)">
+                  <option value="all">All Statuses</option>
+                  <option value="pending">Pending</option>
+                  <option value="completed">Completed</option>
+                  <option value="hidden">Hidden</option>
+                </select>
+                <button onclick="showToast('CSV exported — this will download a real .csv file on your live site')">Export CSV</button>
+                <input type="text" id="adminFilterInput" placeholder="Filter by name, category, or location..." oninput="lfSetAdminQuery(this.value)">
+              </div>
+              <div class="table-wrapper">
+                <table class="admin-table">
+                  <colgroup>
+                    <col style="width:12%"><col style="width:30%"><col style="width:19%"><col style="width:9%"><col style="width:19%"><col style="width:11%">
+                  </colgroup>
+                  <thead>
+                    <tr><th>Status</th><th>Item</th><th>Location</th><th>Date</th><th>Claim Details</th><th>Actions</th></tr>
+                  </thead>
+                  <tbody id="adminTableBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- =====================================================
-           TODO (Lost & Found team): build this page's content here.
-           Useful shared classes (defined in ../shared/styles.css):
-             .list-card      — a clickable/plain row with icon + title + sub + tag
-             .btn / .btn-red / .btn-ghost — buttons
-             .badge           — small colored label
-             .chip-card       — colored left-border info card
-           ===================================================== -->
+    </div>
+  </div>
+</div>
 
-    </main>
+<!-- student detail modal -->
+<div class="modal-overlay hidden" id="detail-modal">
+  <div class="modal-card">
+    <div class="modal-detail">
+      <div class="modal-img" id="detailImg"></div>
+      <button class="modal-close" onclick="lfCloseDetail()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+      <div class="modal-body">
+        <span class="badge found" id="detailCat">Electronics</span>
+        <h2 id="detailName">Item name</h2>
+        <div class="detail-rows">
+          <div class="detail-row">
+            <div class="detail-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.3-7-11a7 7 0 0 1 14 0c0 5.7-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg></div>
+            <div><div class="detail-label">Location Found</div><div class="detail-value" id="detailLocation">—</div></div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="6" width="16" height="14" rx="2"/><path d="M8 4v4M16 4v4M4 10h16"/></svg></div>
+            <div><div class="detail-label">Date Found</div><div class="detail-value" id="detailDate">—</div></div>
+          </div>
+          <div class="detail-row" id="detailDescRow">
+            <div class="detail-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H8l-4 4V5Z"/></svg></div>
+            <div><div class="detail-label">Description</div><div class="detail-value" id="detailDesc" style="font-weight:500;">—</div></div>
+          </div>
+        </div>
+        <div class="claim-box" id="claimBox">Awaiting claim.</div>
+      </div>
+    </div>
+  </div>
+</div>
 
-    <aside class="right-panel">
-      <div class="rp-head"><div class="rp-head-title">TODAY'S SCHEDULE</div></div>
-      <div class="chip-card chip-card--red"><div class="chip-top"><span class="chip-tag">Today · Official</span><span class="chip-dday chip-dday--red">D-DAY</span></div><div class="chip-title">UAC Fall Club Fair</div><div class="chip-sub">14:00 · Central Lawn</div></div>
-      <div class="chip-card chip-card--gold"><div class="chip-top"><span class="chip-tag" style="color:var(--gold);">Free Food</span><span class="chip-dday chip-dday--gold">D-15</span></div><div class="chip-title">Midterm Pizza Social</div><div class="chip-sub">Sep 17 · 12:30 · 1F Student Lounge</div></div>
-      <div style="text-align:center;margin-top:10px;"><a class="rp-view-all" href="../calendar/index.html">View full calendar →</a></div>
-    </aside>
+<!-- admin: confirm-pickup modal — records who actually picked the item up
+     and when, instead of a single-click "mark completed" -->
+<div class="modal-overlay hidden" id="pickup-modal" onclick="if(event.target===this)lfClosePickup()">
+  <div class="pickup-card">
+    <h3>Confirm Pickup</h3>
+    <div class="add-sub" id="pickupItemName">Item name</div>
+    <div class="lf-field">
+      <label>Picked Up By (name or UNID)</label>
+      <input type="text" id="pickupName" placeholder="e.g. u1621234 or Jane Student">
+    </div>
+    <div class="lf-field">
+      <label>Pickup Date</label>
+      <div class="mini-date-picker" id="pickupDatePicker">
+        <button type="button" class="mini-date-trigger" onclick="lfToggleDatePicker('pickup')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="6" width="16" height="14" rx="2"/><path d="M8 4v4M16 4v4M4 10h16"/></svg>
+          <span id="pickupDateLabel">Select a date</span>
+        </button>
+        <div class="mini-date-pop hidden" id="pickupDatePop">
+          <div class="mini-cal-head">
+            <button type="button" class="mini-cal-nav" onclick="event.stopPropagation();lfShiftMonth('pickup',-1)">‹</button>
+            <div class="mini-cal-title" id="pickupDateHead"></div>
+            <button type="button" class="mini-cal-nav" onclick="event.stopPropagation();lfShiftMonth('pickup',1)">›</button>
+          </div>
+          <div class="mini-grid" id="pickupDateGrid"></div>
+        </div>
+      </div>
+      <input type="hidden" id="pickupDate">
+    </div>
+    <div class="pickup-actions">
+      <button class="btn btn-ghost" style="flex:1;" onclick="lfClosePickup()">Cancel</button>
+      <button class="btn btn-red" style="flex:1;" onclick="lfConfirmPickup()">Confirm Pickup</button>
+    </div>
   </div>
 </div>
 
 <div id="toast-host"></div>
+<script src="../shared/session.js"></script>
+<script src="../shared/store.js"></script>
 <script src="../shared/toast.js"></script>
 <script src="../shared/nav.js"></script>
 <script src="lostfound.js"></script>
 <script>
+  var SESSION = requireSession();
   mountNavRail('navrail', 'lostfound');
+  if(SESSION){ isAdmin = (SESSION.role === 'admin'); lfApplyAdmin(); }
 </script>
 </body>
 </html>

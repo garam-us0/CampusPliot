@@ -9,9 +9,9 @@
 .field.filled{border-color:var(--red);}
 .field input{border:none;outline:none;background:none;font-size:15px;color:var(--ink);width:100%;font-family:inherit;}
 .otp-row{display:flex;gap:8px;margin-bottom:22px;}
-.otp-box{width:44px;height:48px;border:1.5px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;color:var(--red);background:#fff;}
+.otp-box{width:44px;height:48px;border:1.5px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;color:var(--red);background:#fff;text-align:center;outline:none;font-family:inherit;caret-color:var(--red);padding:0;}
 .otp-box.filled{border-color:var(--red);}
-.otp-box.cursor{border-color:var(--ink);}
+.otp-box.cursor,.otp-box:focus{border-color:var(--ink);}
 .login-foot{display:flex;justify-content:space-between;margin-top:18px;font-size:13px;}
 .footer-note{margin-top:30px;font-size:12.5px;color:var(--muted-2);}
 

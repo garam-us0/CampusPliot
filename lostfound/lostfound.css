@@ -1,4 +1,205 @@
-/* Campuspilot — LOST & FOUND page only. Loaded after ../shared/styles.css.
-   Shared look-and-feel (topbar, nav rail, buttons, badges, chip cards,
-   .list-card, .settings-row, .feature-head) already comes from shared/styles.css —
-   only add styles here that are specific to this page. */
+/* Campuspilot — LOST & FOUND page only. Loaded after shared/styles.css.
+   Student registry (search/browse/report) + an admin dashboard with its
+   own stat tiles, month-filtered table and item forms. */
+.badge.lost{background:var(--red-tint);color:var(--red);}
+.badge.found{background:var(--green-tint);color:var(--green);}
+
+/* ================= STUDENT: search registry ================= */
+/* #studentView/#adminView each take the full height .main-col gives them and
+   lay out as a column: the heading/search/tabs stay pinned (flex-shrink:0)
+   and only the actual item list/table scrolls, in its own fixed box — so the
+   page title is never carried off-screen by scrolling through items. */
+#studentView, #adminView{height:100%;display:flex;flex-direction:column;min-height:0;}
+#studentView.hidden, #adminView.hidden{display:none!important;}
+
+.lf-hero{max-width:720px;margin-bottom:22px;flex-shrink:0;}
+.lf-hero h1{font-size:25px;font-weight:700;}
+.lf-hero p{margin-top:6px;font-size:14px;color:var(--muted);}
+
+.lf-search-row{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap;flex-shrink:0;}
+.lf-search-row select{border:1px solid var(--border);border-radius:8px;padding:11px 13px;font-size:13.5px;font-family:inherit;color:var(--ink);background:#fff;flex-shrink:0;}
+.lf-search-row input[type=text]{flex:1;min-width:200px;border:1px solid var(--border);border-radius:8px;padding:11px 15px;font-size:13.5px;font-family:inherit;color:var(--ink);background:#fff;}
+.lf-search-row input:focus,.lf-search-row select:focus{outline:none;border-color:var(--red);}
+.lf-search-row button{background:var(--red);color:#fff;font-weight:800;font-size:12.5px;letter-spacing:.03em;padding:0 22px;border-radius:8px;flex-shrink:0;}
+.lf-search-row button:hover{filter:brightness(1.08);}
+
+.lf-status-tabs{display:flex;gap:7px;margin-bottom:16px;flex-wrap:wrap;border-bottom:1px solid var(--border);padding-bottom:14px;flex-shrink:0;}
+.lf-pill{border-radius:var(--r-pill);padding:8px 15px;font-size:12.5px;font-weight:700;border:1px solid var(--border);background:var(--surface);color:#525A66;}
+.lf-pill.active{background:var(--ink);color:#fff;border-color:var(--ink);}
+.lf-pill .cnt{opacity:.75;margin-left:4px;}
+
+.lf-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(216px,1fr));gap:14px;flex:1;min-height:0;overflow-y:auto;align-content:start;padding-bottom:4px;}
+/* .lf-card is a <button>: Chromium's built-in button layout doesn't
+   report its real content height to CSS Grid's auto-row sizing, so
+   without an explicit display the grid stretched every card in a row to
+   a too-short height and overflow:hidden clipped the rest (the category
+   tag/date at the bottom). display:block/flex makes it lay out — and
+   report its height — like any other grid item. */
+.lf-card{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);box-shadow:var(--shadow-card);overflow:hidden;text-align:left;transition:border-color .15s ease;}
+.lf-card:hover{border-color:#D9DBE0;}
+.lf-card-thumb{height:160px;background:var(--bg);display:flex;align-items:center;justify-content:center;color:var(--muted-2);background-size:cover;background-position:center;}
+.lf-card-body{padding:12px 14px 14px;}
+.lf-card-cat{font-size:10.5px;font-weight:800;color:var(--muted-2);text-transform:uppercase;letter-spacing:.03em;font-family:'Barlow',sans-serif;}
+.lf-card-title{font-weight:700;font-size:14px;margin-top:4px;line-height:1.3;}
+.lf-card-meta{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.5;}
+.lf-card-tag{display:inline-block;margin-top:9px;font-size:10.5px;font-weight:800;padding:3px 9px;border-radius:6px;letter-spacing:.02em;}
+.lf-card-tag.pending{background:var(--gold-tint);color:var(--gold);}
+.lf-card-tag.claimed{background:var(--red-tint);color:var(--red);}
+.lf-card-tag.completed{background:#EFEFEF;color:var(--muted-2);}
+.lf-empty{text-align:center;padding:40px 20px;color:var(--muted-2);font-size:13.5px;grid-column:1/-1;}
+
+/* ================= ADMIN: dashboard ================= */
+.admin-head-row{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:20px;flex-wrap:wrap;flex-shrink:0;}
+.admin-head-row h1{font-size:22px;font-weight:700;}
+.admin-head-row p{margin-top:5px;font-size:13.5px;color:var(--muted);}
+.lf-stat-row{display:flex;gap:12px;flex-wrap:wrap;}
+.lf-stat-tile{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:12px 18px;min-width:108px;box-shadow:var(--shadow-card);}
+.lf-stat-tile .lf-stat-num{font-family:'Roboto Slab',Georgia,serif;font-size:22px;font-weight:700;}
+.lf-stat-tile .lf-stat-label{font-size:11px;color:var(--muted);margin-top:2px;}
+.lf-stat-tile.alert{background:var(--red-tint-2);border-color:#F5D0D0;}
+.lf-stat-tile.alert .lf-stat-num{color:var(--red);}
+
+.lf-month-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px;flex-shrink:0;}
+.lf-month-bar-label{font-size:11px;font-weight:800;color:var(--muted-2);text-transform:uppercase;letter-spacing:.03em;font-family:'Barlow',sans-serif;}
+.lf-month-selects{display:flex;align-items:center;gap:7px;}
+.lf-month-select{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:7px 12px;font-weight:700;font-size:13px;font-family:inherit;color:var(--ink);cursor:pointer;}
+.lf-month-select:hover{border-color:#C9CDCD;}
+.lf-month-current{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:7px 13px;font-weight:700;font-size:12.5px;color:var(--ink);cursor:pointer;}
+.lf-month-current:hover{background:#EDEEEE;}
+.lf-month-bar-note{font-size:11.5px;color:var(--muted-2);}
+
+/* The form (left) and the table (right) each get their own fixed-height
+   box and scroll independently, instead of the page scrolling as one long
+   block — so the heading/stat tiles above never get carried off-screen
+   just because the item table has a lot of rows. */
+.admin-two-col{display:flex;gap:18px;align-items:stretch;flex:1;min-height:0;}
+.admin-left{width:300px;flex-shrink:0;overflow-y:auto;min-height:0;}
+.admin-right{flex:1;min-width:0;display:flex;flex-direction:column;min-height:0;}
+.admin-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--shadow-card);padding:18px 20px;}
+.admin-panel h2{font-size:15px;font-weight:700;margin-bottom:14px;}
+.admin-right .admin-panel{flex:1;min-height:0;display:flex;flex-direction:column;}
+
+.lf-field{margin-bottom:13px;}
+.lf-field label{display:block;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.02em;font-family:'Barlow',sans-serif;}
+.lf-field input[type=text],.lf-field input[type=date],.lf-field select,.lf-field textarea,.lf-field input[type=file]{width:100%;border:1px solid var(--border);border-radius:8px;padding:9px 11px;font-size:13px;font-family:inherit;color:var(--ink);background:#fff;}
+.lf-field input:focus,.lf-field select:focus,.lf-field textarea:focus{outline:none;border-color:var(--red);}
+.lf-field textarea{resize:vertical;min-height:58px;}
+.lf-img-preview{margin-top:8px;width:100%;height:80px;border-radius:8px;border:1px dashed var(--border);background:var(--bg) center/cover no-repeat;display:flex;align-items:center;justify-content:center;color:var(--muted-2);font-size:11.5px;}
+/* A native <input type=file> renders its button text in the browser's own
+   locale (e.g. Korean on a Korean-locale browser). A visible label stands
+   in as the button so the wording stays fixed in English regardless. */
+.file-upload-row{position:relative;display:flex;align-items:center;gap:10px;}
+.file-upload-input{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
+.file-upload-btn{display:inline-flex;align-items:center;gap:7px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:9px 15px;font-size:13px;font-weight:700;color:var(--ink);cursor:pointer;flex-shrink:0;}
+.file-upload-btn:hover{background:#EDEEEE;}
+.file-upload-input:focus-visible + .file-upload-btn{outline:2px solid var(--red);outline-offset:1px;}
+.file-upload-name{font-size:12.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+
+.protocol-note{margin-top:14px;background:var(--granite-tint);border-radius:var(--r-md);padding:13px 15px;font-size:12px;color:var(--granite);line-height:1.6;}
+.protocol-note strong{display:block;margin-bottom:3px;font-family:'Barlow',sans-serif;}
+
+.table-toolbar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center;flex-shrink:0;}
+.table-toolbar select{border:1px solid var(--border);border-radius:8px;padding:9px 11px;font-size:12.5px;font-family:inherit;color:var(--ink);background:#fff;}
+.table-toolbar input[type=text]{flex:1;min-width:160px;border:1px solid var(--border);border-radius:8px;padding:9px 12px;font-size:12.5px;font-family:inherit;color:var(--ink);background:#fff;}
+.table-toolbar button{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:9px 14px;font-size:12px;font-weight:700;color:var(--ink);}
+.table-toolbar button:hover{background:#EDEEEE;}
+
+.table-wrapper{overflow:auto;border:1px solid var(--border);border-radius:var(--r-md);flex:1;min-height:0;}
+/* table-layout:fixed + the <colgroup> below pin each column to a set
+   share of the table's width, so the grid itself never reflows: without
+   this, the browser's default "auto" layout resizes every column to fit
+   whatever text happens to be in view, so Item/Location/Claim Details
+   genuinely end up different widths (and wrap differently) in a month
+   that's all PENDING ("Awaiting claim") vs one with COMPLETED rows
+   ("Picked up — u1621234 · Sep 9") mixed in — the exact "September and
+   October don't match" difference this was about. */
+.admin-table{width:100%;border-collapse:collapse;font-size:12.5px;min-width:620px;table-layout:fixed;}
+.admin-table th{text-align:left;color:var(--muted-2);text-transform:uppercase;font-size:10px;letter-spacing:.03em;font-family:'Barlow',sans-serif;padding:10px 12px;border-bottom:1px solid var(--border);background:var(--bg);white-space:nowrap;position:sticky;top:0;z-index:1;}
+.admin-table td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:middle;}
+.admin-table tr:last-child td{border-bottom:none;}
+.thumb-mini{width:32px;height:32px;border-radius:6px;background:var(--bg) center/cover no-repeat;display:inline-flex;align-items:center;justify-content:center;color:var(--muted-2);flex-shrink:0;}
+.status-chip{font-size:10px;font-weight:800;padding:3px 9px;border-radius:6px;letter-spacing:.02em;white-space:nowrap;}
+.status-chip.pending{background:var(--gold-tint);color:var(--gold);}
+.status-chip.claimed{background:var(--red-tint);color:var(--red);}
+.status-chip.completed{background:var(--green-tint);color:var(--green);}
+.status-chip.hidden-status{background:var(--border);color:var(--muted);}
+.row-actions{display:flex;gap:5px;}
+.row-actions button{width:27px;height:27px;border-radius:7px;background:var(--bg);color:var(--muted);display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}
+.row-actions button:hover{background:var(--border);}
+.row-actions button.danger:hover{background:var(--red-tint);color:var(--red);}
+.row-actions button.ok:hover{background:var(--green-tint);color:var(--green);}
+.empty-table{text-align:center;color:var(--muted-2);padding:24px 10px!important;}
+.month-divider td{background:var(--bg);color:var(--muted);font-weight:800;font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;padding:9px 12px!important;font-family:'Barlow',sans-serif;border-bottom:1px solid var(--border);}
+.claim-txt{font-size:11.5px;color:var(--muted);max-width:170px;}
+
+/* ---------- detail modal (student) ---------- */
+.modal-overlay{position:fixed;inset:0;background:rgba(20,16,16,.5);display:flex;align-items:center;justify-content:center;z-index:60;padding:20px;}
+.modal-card{width:520px;max-width:100%;max-height:92vh;background:var(--surface);border-radius:var(--r-lg);box-shadow:0 40px 80px -20px rgba(0,0,0,.4);overflow-y:auto;}
+.modal-detail{padding:0 0 26px;display:flex;flex-direction:column;position:relative;}
+.modal-img{height:280px;background:var(--bg) center/cover no-repeat;display:flex;align-items:center;justify-content:center;color:var(--muted-2);border-radius:var(--r-lg) var(--r-lg) 0 0;}
+.modal-body{padding:22px 26px 0;}
+.modal-close{position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.15);}
+.modal-close:hover{background:#fff;}
+.modal-detail h2{margin:4px 0 14px;font-weight:700;font-size:19px;}
+.detail-rows{display:flex;flex-direction:column;gap:12px;margin-bottom:16px;}
+.detail-row{display:flex;gap:12px;}
+.detail-icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--granite-tint);color:var(--granite);}
+.detail-label{font-size:11px;color:var(--muted-2);font-weight:700;text-transform:uppercase;letter-spacing:.02em;}
+.detail-value{font-size:13.5px;color:var(--ink);font-weight:600;margin-top:2px;}
+.claim-box{background:var(--bg);border-radius:var(--r-md);padding:13px 15px;font-size:12.5px;color:var(--muted);line-height:1.6;margin-bottom:16px;}
+.claim-box b{color:var(--ink);}
+
+.pickup-card{width:380px;max-width:100%;background:var(--surface);border-radius:var(--r-lg);padding:24px 24px 20px;box-shadow:0 40px 80px -20px rgba(0,0,0,.4);}
+.pickup-card h3{font-size:17px;font-weight:700;margin-bottom:4px;}
+.pickup-card .add-sub{font-size:13px;color:var(--muted);margin-bottom:16px;}
+
+/* mini-calendar date picker (replaces the native <input type=date>, which
+   doesn't render reliably in every environment) — navigable by month/year
+   via the ‹ › arrows, reused for both Date Found and Pickup Date. */
+.mini-date-picker{position:relative;}
+.mini-date-trigger{width:100%;display:flex;align-items:center;gap:9px;border:1px solid var(--border);border-radius:8px;padding:9px 11px;font-size:13px;font-weight:600;color:var(--ink);background:#fff;text-align:left;}
+.mini-date-trigger:hover{border-color:#C9CDCD;}
+.mini-date-trigger svg{flex-shrink:0;color:var(--muted);}
+.mini-date-pop{position:absolute;top:calc(100% + 6px);left:0;z-index:70;background:#fff;border:1px solid var(--border);border-radius:var(--r-md);box-shadow:0 20px 44px -14px rgba(0,0,0,.3);padding:14px;width:244px;}
+.mini-date-pop .mini-cal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.mini-date-pop .mini-cal-title{font-weight:700;font-size:13px;}
+.mini-cal-nav{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--muted);flex-shrink:0;}
+.mini-cal-nav:hover{background:var(--bg);color:var(--ink);}
+.mini-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px;text-align:center;}
+.mini-grid .dow{font-size:10px;font-weight:700;color:var(--muted-2);padding:2px 0;}
+.mini-grid .dow.sun{color:var(--red);}
+.mini-day{font-size:12.5px;color:#525A66;padding:5px 0;border-radius:50%;}
+.mini-day.dim{color:#D8DAE0;}
+.mini-day.pick{cursor:pointer;}
+.mini-day.pick:hover{background:var(--bg);}
+.mini-day.pick.today{box-shadow:inset 0 0 0 1.5px var(--red);color:var(--red);font-weight:700;}
+.mini-day.sel{background:var(--red);color:#fff;font-weight:700;box-shadow:none;}
+.pickup-actions{display:flex;gap:10px;margin-top:16px;}
+
+#toast-host{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:200;display:flex;flex-direction:column;gap:8px;align-items:center;}
+.toast{background:var(--ink);color:#fff;font-size:14px;font-weight:600;padding:12px 22px;border-radius:var(--r-pill);box-shadow:0 14px 30px -10px rgba(0,0,0,.4);opacity:0;transform:translateY(8px);transition:opacity .2s ease, transform .2s ease;}
+.toast.show{opacity:1;transform:translateY(0);}
+
+@media (max-width:900px){
+  /* Narrow screens stack the two columns, so there's no more side-by-side
+     height to split — let the page scroll as a whole here instead of
+     boxing each column into its own internal scrollbar. */
+  #adminView{height:auto;display:block;}
+  .admin-two-col{flex-direction:column;flex:none;}
+  .admin-left{width:100%;overflow-y:visible;}
+  .admin-right{flex:none;}
+  .admin-right .admin-panel{flex:none;}
+  .table-wrapper{flex:none;}
+}
+
+@media (max-width:900px){
+  /* Narrow screens stack the two columns, so there's no more side-by-side
+     height to split — let the page scroll as a whole here instead of
+     boxing each column into its own internal scrollbar. */
+  #adminView{height:auto;display:block;}
+  .admin-two-col{flex-direction:column;flex:none;}
+  .admin-left{width:100%;overflow-y:visible;}
+  .admin-right{flex:none;}
+  .admin-right .admin-panel{flex:none;}
+  .table-wrapper{flex:none;}
+}

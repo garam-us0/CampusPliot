@@ -17,8 +17,8 @@
       <div class="topbar-sub"><span>THE UNIVERSITY OF UTAH</span></div>
     </div>
     <div class="topbar-right">
-      <div class="topbar-avatar">G</div>Garam (u1621896)
-      <a class="topbar-logout" href="../login/index.html">Logout</a>
+      <div class="topbar-avatar">G</div><span class="topbar-username">Garam (u1621896)</span>
+      <a class="topbar-logout" href="../login/index.html" onclick="logout();return false;">Logout</a>
     </div>
   </div>
   <div class="breadcrumb-bar">
@@ -39,34 +39,77 @@
         </div>
         <div>
           <h1>Campus Jobs</h1>
-          <div class="fh-sub">Teaching Assistant, RA, and student worker listings</div>
+          <div class="fh-sub" id="fhSub">Teaching Assistant, RA, and student worker listings</div>
         </div>
       </div>
 
-      <!-- =====================================================
-           TODO (Campus Jobs team): build this page's content here.
-           Useful shared classes (defined in ../shared/styles.css):
-             .list-card (can be a button element for "Apply" clicks) — job rows
-             .lc-tag — small status tag ("Open" / "Closing Soon")
-           ===================================================== -->
+      <div class="cj-toolbar">
+        <div class="cj-search">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M20 20l-4.3-4.3"/></svg>
+          <input type="text" id="cjSearch" placeholder="Search by title or department…" oninput="cjRender()">
+        </div>
+        <button class="cj-post-btn hidden" id="cjPostBtn" onclick="cjOpenPost()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+          Post Job
+        </button>
+      </div>
+      <div class="cj-filters" id="cjTypeFilters"></div>
 
+      <div id="cjList"></div>
     </main>
+  </div>
+</div>
 
-    <aside class="right-panel">
-      <div class="rp-head"><div class="rp-head-title">TODAY'S SCHEDULE</div></div>
-      <div class="chip-card chip-card--red"><div class="chip-top"><span class="chip-tag">Today · Official</span><span class="chip-dday chip-dday--red">D-DAY</span></div><div class="chip-title">UAC Fall Club Fair</div><div class="chip-sub">14:00 · Central Lawn</div></div>
-      <div class="chip-card chip-card--gold"><div class="chip-top"><span class="chip-tag" style="color:var(--gold);">Free Food</span><span class="chip-dday chip-dday--gold">D-15</span></div><div class="chip-title">Midterm Pizza Social</div><div class="chip-sub">Sep 17 · 12:30 · 1F Student Lounge</div></div>
-      <div style="text-align:center;margin-top:10px;"><a class="rp-view-all" href="../calendar/index.html">View full calendar →</a></div>
-    </aside>
+<!-- job detail modal -->
+<div class="modal-overlay hidden" id="detail-modal" onclick="if(event.target===this)cjCloseDetail()">
+  <div class="modal-card">
+    <div class="modal-detail">
+      <button class="modal-close" onclick="cjCloseDetail()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8A8290" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6l-12 12"/></svg></button>
+      <h2 id="detailTitle">Job title</h2>
+      <div class="cj-modal-sub" id="detailSub">Department</div>
+      <div class="cj-stat-row" id="detailStats"></div>
+      <div class="cj-section-label">Description</div>
+      <div class="cj-desc" id="detailDesc"></div>
+      <div class="cj-section-label">Requirements</div>
+      <ul class="cj-req" id="detailReq"></ul>
+      <button class="btn btn-red btn-block" id="applyBtn" style="margin-top:20px;" onclick="cjApply()">Apply Now</button>
+    </div>
+  </div>
+</div>
+
+<!-- post job modal (admin only) -->
+<div class="modal-overlay hidden" id="post-modal" onclick="if(event.target===this)cjClosePost()">
+  <div class="modal-card">
+    <div class="modal-detail">
+      <button class="modal-close" onclick="cjClosePost()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8A8290" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6l-12 12"/></svg></button>
+      <h2>Post a job</h2>
+      <div class="cj-field"><label>Title</label><input type="text" id="cjFormTitle" placeholder="e.g. CS 3500 Teaching Assistant"></div>
+      <div class="cj-field-row">
+        <div class="cj-field"><label>Type</label><select id="cjFormType"><option>TA</option><option>RA</option><option>Student Worker</option></select></div>
+        <div class="cj-field"><label>Department</label><input type="text" id="cjFormDept" placeholder="e.g. School of Computing"></div>
+      </div>
+      <div class="cj-field-row">
+        <div class="cj-field"><label>Pay</label><input type="text" id="cjFormPay" placeholder="e.g. $16/hr"></div>
+        <div class="cj-field"><label>Hours/week</label><input type="text" id="cjFormHours" placeholder="e.g. 10"></div>
+      </div>
+      <div class="cj-field"><label>Description</label><textarea id="cjFormDesc" placeholder="What will this role do?"></textarea></div>
+      <div class="cj-field"><label>Requirements (one per line)</label><textarea id="cjFormReq" placeholder="e.g.&#10;Completed CS 3500 with a B+ or higher&#10;Available Tue/Thu afternoons"></textarea></div>
+      <button class="btn btn-red btn-block" onclick="cjSubmitPost()">Publish Listing</button>
+    </div>
   </div>
 </div>
 
 <div id="toast-host"></div>
+<div id="toast-host"></div>
+<script src="../shared/session.js"></script>
+<script src="../shared/store.js"></script>
 <script src="../shared/toast.js"></script>
 <script src="../shared/nav.js"></script>
 <script src="campusjobs.js"></script>
 <script>
+  var SESSION = requireSession();
   mountNavRail('navrail', 'campusjobs');
+  if(SESSION){ isAdmin = (SESSION.role === 'admin'); cjApplyAdmin(); }
 </script>
 </body>
 </html>

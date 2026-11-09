@@ -17,8 +17,8 @@
       <div class="topbar-sub"><span>THE UNIVERSITY OF UTAH</span></div>
     </div>
     <div class="topbar-right">
-      <div class="topbar-avatar">G</div>Garam (u1621896)
-      <a class="topbar-logout" href="../login/index.html">Logout</a>
+      <div class="topbar-avatar">G</div><span class="topbar-username">Garam (u1621896)</span>
+      <a class="topbar-logout" href="../login/index.html" onclick="logout();return false;">Logout</a>
     </div>
   </div>
   <div class="breadcrumb-bar">
@@ -39,33 +39,69 @@
         </div>
         <div>
           <h1>Course Insights</h1>
-          <div class="fh-sub">Course evaluations, syllabus previews, and student ratings</div>
+          <div class="fh-sub" id="fhSub">Course evaluations, syllabus previews, and ratings</div>
         </div>
       </div>
 
-      <!-- =====================================================
-           TODO (Course Insights team): build this page's content here.
-           Useful shared classes (defined in ../shared/styles.css):
-             .list-card — course rows (icon + title + sub)
-           ===================================================== -->
+      <div class="ci-toolbar">
+        <div class="ci-search">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M20 20l-4.3-4.3"/></svg>
+          <input type="text" id="ciSearch" placeholder="Search by course code, name, or instructor…" oninput="ciRender()">
+        </div>
+      </div>
+      <div class="ci-filters" id="ciDeptFilters"></div>
 
+      <div id="ciList"></div>
     </main>
+  </div>
+</div>
 
-    <aside class="right-panel">
-      <div class="rp-head"><div class="rp-head-title">TODAY'S SCHEDULE</div></div>
-      <div class="chip-card chip-card--red"><div class="chip-top"><span class="chip-tag">Today · Official</span><span class="chip-dday chip-dday--red">D-DAY</span></div><div class="chip-title">UAC Fall Club Fair</div><div class="chip-sub">14:00 · Central Lawn</div></div>
-      <div class="chip-card chip-card--gold"><div class="chip-top"><span class="chip-tag" style="color:var(--gold);">Free Food</span><span class="chip-dday chip-dday--gold">D-15</span></div><div class="chip-title">Midterm Pizza Social</div><div class="chip-sub">Sep 17 · 12:30 · 1F Student Lounge</div></div>
-      <div style="text-align:center;margin-top:10px;"><a class="rp-view-all" href="../calendar/index.html">View full calendar →</a></div>
-    </aside>
+<!-- course detail modal -->
+<div class="modal-overlay hidden" id="detail-modal" onclick="if(event.target===this)ciCloseDetail()">
+  <div class="modal-card">
+    <div class="modal-detail">
+      <button class="modal-close" onclick="ciCloseDetail()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8A8290" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6l-12 12"/></svg></button>
+      <h2 id="detailTitle">Course name</h2>
+      <div class="ci-modal-sub" id="detailSub">Instructor</div>
+
+      <div class="ci-stat-row">
+        <div class="ci-stat"><div class="ci-stat-val" id="statRating">4.5 ★</div><div class="ci-stat-label">Avg Rating</div></div>
+        <div class="ci-stat"><div class="ci-stat-val" id="statDiff">Medium</div><div class="ci-stat-label">Difficulty</div></div>
+        <div class="ci-stat"><div class="ci-stat-val" id="statWorkload">6 hrs</div><div class="ci-stat-label">Weekly Workload</div></div>
+      </div>
+
+      <button class="ci-syllabus-btn" onclick="showToast('Syllabus preview is a placeholder in this prototype.')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg>
+        Preview Syllabus
+      </button>
+
+      <div class="ci-reviews-head">
+        <h3 id="reviewsCount">Reviews (0)</h3>
+        <button class="ci-write-btn" id="writeBtn" onclick="ciToggleWriteForm()">Write a Review</button>
+      </div>
+
+      <div class="ci-write-form" id="writeForm">
+        <div class="ci-star-pick" id="starPick"></div>
+        <textarea id="reviewText" placeholder="What should other students know about this course?"></textarea>
+        <button class="btn btn-red" onclick="ciSubmitReview()">Post Review</button>
+      </div>
+
+      <div id="reviewList"></div>
+    </div>
   </div>
 </div>
 
 <div id="toast-host"></div>
+<div id="toast-host"></div>
+<script src="../shared/session.js"></script>
+<script src="../shared/store.js"></script>
 <script src="../shared/toast.js"></script>
 <script src="../shared/nav.js"></script>
 <script src="courseinsights.js"></script>
 <script>
+  var SESSION = requireSession();
   mountNavRail('navrail', 'courseinsights');
+  if(SESSION){ isAdmin = (SESSION.role === 'admin'); ciApplyAdmin(); }
 </script>
 </body>
 </html>

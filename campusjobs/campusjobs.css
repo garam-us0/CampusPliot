@@ -1,4 +1,68 @@
-/* Campuspilot — CAMPUS JOBS page only. Loaded after ../shared/styles.css.
-   Shared look-and-feel (topbar, nav rail, buttons, badges, chip cards,
-   .list-card, .feature-head) already comes from shared/styles.css —
-   only add styles here that are specific to this page. */
+/* Campuspilot — CAMPUS JOBS page only. Loaded after shared/styles.css.
+   Search/filter toolbar, job detail + post-job modals, admin row
+   actions. list-card/lc-*/switch/badge basics come from shared/styles.css. */
+.main-col{max-width:860px;}
+.cj-toolbar{display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap;}
+.cj-search{flex:1;min-width:180px;display:flex;align-items:center;gap:9px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:10px 13px;box-shadow:var(--shadow-card);}
+.cj-search svg{flex-shrink:0;color:var(--muted-2);}
+.cj-search input{border:none;outline:none;font-size:13.5px;font-family:inherit;flex:1;background:transparent;color:var(--ink);}
+.cj-post-btn{display:flex;align-items:center;gap:7px;background:var(--red);color:#fff;font-weight:700;font-size:13px;padding:11px 16px;border-radius:var(--r-md);flex-shrink:0;box-shadow:var(--shadow-card);}
+.cj-post-btn:hover{filter:brightness(1.08);}
+.cj-filters{display:flex;gap:7px;margin-bottom:16px;flex-wrap:wrap;}
+.cj-pill{border-radius:var(--r-pill);padding:7px 14px;font-size:12px;font-weight:700;border:1px solid var(--border);background:var(--surface);color:#525A66;}
+.cj-pill.active{background:var(--ink);color:#fff;border-color:var(--ink);}
+
+.list-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:14px 16px;display:flex;align-items:center;gap:13px;margin-bottom:8px;width:100%;text-align:left;box-shadow:var(--shadow-card);transition:border-color .15s ease,opacity .15s;}
+.list-card:hover{border-color:#D9DBE0;}
+.list-card.closed{opacity:.55;}
+.lc-click{display:flex;align-items:center;gap:13px;flex:1;min-width:0;text-align:left;cursor:pointer;}
+.lc-icon{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.lc-title{font-weight:700;font-size:14.5px;}
+.lc-sub{font-size:12.5px;color:var(--muted);margin-top:3px;}
+.lc-tag{margin-left:auto;font-size:11px;font-weight:800;padding:4px 10px;border-radius:6px;flex-shrink:0;white-space:nowrap;}
+.tag-open{background:var(--green-tint);color:var(--green);}
+.tag-closed{background:#F0F0F2;color:var(--muted-2);}
+.lc-admin{display:flex;align-items:center;gap:6px;flex-shrink:0;margin-left:10px;padding-left:10px;border-left:1px solid var(--border);}
+.lc-admin-btn{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;background:var(--bg);color:var(--muted);flex-shrink:0;}
+.lc-admin-btn:hover{background:var(--border);}
+.lc-admin-btn.danger:hover{background:var(--red-tint);color:var(--red);}
+
+/* ---------- detail / post modal ---------- */
+.modal-overlay{position:fixed;inset:0;background:rgba(20,16,16,.5);display:flex;align-items:center;justify-content:center;z-index:60;padding:20px;}
+.modal-card{width:560px;max-width:100%;max-height:92vh;background:var(--surface);border-radius:var(--r-lg);box-shadow:0 40px 80px -20px rgba(0,0,0,.4);overflow-y:auto;}
+.modal-detail{padding:28px 30px;position:relative;}
+.modal-close{position:absolute;top:20px;right:20px;width:32px;height:32px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;}
+.modal-close:hover{background:var(--border);}
+.modal-detail h2{margin:4px 0 4px;font-weight:700;font-size:19px;}
+.cj-modal-sub{font-size:13px;color:var(--muted);margin-bottom:16px;}
+.cj-stat-row{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap;}
+.cj-stat{flex:1;min-width:100px;background:var(--bg);border-radius:var(--r-md);padding:11px;text-align:center;}
+.cj-stat-val{font-family:'Roboto Slab',serif;font-size:16px;font-weight:700;}
+.cj-stat-label{font-size:10px;color:var(--muted-2);font-weight:700;text-transform:uppercase;letter-spacing:.03em;margin-top:2px;}
+.cj-section-label{font-size:11.5px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.02em;margin:16px 0 8px;font-family:'Barlow',sans-serif;}
+.cj-desc{font-size:13.5px;color:#3B4450;line-height:1.6;}
+.cj-req{font-size:13.5px;color:#3B4450;line-height:1.7;padding-left:18px;}
+
+.cj-field{margin-bottom:13px;}
+.cj-field label{display:block;font-size:11.5px;font-weight:700;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.02em;font-family:'Barlow',sans-serif;}
+.cj-field input,.cj-field select,.cj-field textarea{width:100%;border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:13.5px;font-family:inherit;color:var(--ink);}
+.cj-field input:focus,.cj-field select:focus,.cj-field textarea:focus{outline:none;border-color:var(--red);}
+.cj-field textarea{resize:vertical;min-height:64px;}
+.cj-field-row{display:flex;gap:10px;}
+.cj-field-row .cj-field{flex:1;}
+
+.btn{font-weight:700;font-size:15px;text-align:center;padding:13px 22px;border-radius:8px;display:flex;align-items:center;justify-content:center;gap:8px;transition:filter .15s ease;}
+.btn:hover{filter:brightness(1.08);}
+.btn-block{width:100%;}
+.btn-red{background:var(--red);color:#fff;}
+.btn-red[disabled]{background:#D8DAE0;cursor:default;}
+
+
+@media (max-width:720px){
+  .app-shell{flex-direction:column;}
+  .topbar-sub{display:none;}
+  .nav-rail{flex-direction:row;width:100%;padding:8px 10px;overflow-x:auto;border-right:none;border-bottom:1px solid var(--border);}
+  .nav-rail-item{flex-shrink:0;min-width:58px;}
+  .nav-rail-feedback{margin-top:0;margin-left:auto;border-top:none;padding-top:9px;}
+  .main-col{max-width:none;}
+}
