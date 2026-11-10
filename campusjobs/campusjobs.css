@@ -7,13 +7,12 @@
 :root{
   --cj-accent:#7E1A14; --cj-accent-dark:#5E120E; --cj-tint:#FBEDEC; --cj-tint-border:#F1D3D0; --cj-chip:#F1F1F1;
 }
-.main-col{max-width:1120px;}
 .cj-sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
 
 .cj-page{display:flex;flex-direction:column;gap:20px;}
 .cj-head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:14px;}
 .cj-eyebrow{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--cj-accent);font-family:'Barlow',sans-serif;}
-.cj-head h1{margin:5px 0;font-family:'Source Serif 4',Georgia,serif;font-size:27px;font-weight:600;}
+.cj-head h1{margin:5px 0;font-size:27px;}
 .cj-sub{margin:0;font-size:13.5px;color:var(--muted);}
 .cj-actions{display:flex;flex-wrap:wrap;gap:9px;}
 
