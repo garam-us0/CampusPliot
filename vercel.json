@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "api/parse-syllabus/index.ts": {
+      "maxDuration": 60
+    }
+  }
+}

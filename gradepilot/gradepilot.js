@@ -81,14 +81,18 @@ function gpClearAll(){
   showToast('All GradePilot data on this device has been cleared.');
 }
 
-/* Real syllabus-analysis backend (separate project: a Groq-backed
-   Vercel API route). Point this at your own deployed endpoint.
-   NOTE: a page published as a Claude artifact blocks outbound fetch()
-   to any external host by its sandbox policy, so this call will only
-   actually reach the API once this code runs on a normal webpage
-   (e.g. the real GitHub Pages deployment) — inside the artifact
-   preview it will fail fast and fall back to the demo templates. */
-var GP_SYLLABUS_API_URL = 'https://gradepilot-ai.vercel.app/api/parse-syllabus';
+/* Real syllabus-analysis backend: a Groq-backed Vercel serverless
+   function that now lives in THIS SAME repo, at api/parse-syllabus/
+   (see package.json's groq-sdk dependency + vercel.json). Deployed
+   together with this static frontend as one Vercel project, so the
+   call below is same-origin — no CORS setup needed. It only responds
+   once that Vercel project is deployed with a GROQ_API_KEY environment
+   variable set (Vercel dashboard -> Project -> Settings -> Environment
+   Variables). Locally, run `vercel dev` from the repo root so both the
+   static pages and this function are served together; opening
+   index.html directly as a file:// page can't reach any API route, so
+   it always falls back to the demo template below. */
+var GP_SYLLABUS_API_URL = '/api/parse-syllabus';
 
 if(window.pdfjsLib){
   pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';

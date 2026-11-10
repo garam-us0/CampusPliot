@@ -1,0 +1,9 @@
+{
+  "name": "campuspilot",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Campuspilot — UAC student portal (static frontend) + GradePilot syllabus-parsing API (Vercel serverless function).",
+  "dependencies": {
+    "groq-sdk": "^1.6.0"
+  }
+}
