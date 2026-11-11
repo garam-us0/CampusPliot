@@ -3,7 +3,14 @@
    Jobs, like the gold/teal/green accents other pages borrow from the
    shared palette) — scoped to cj- prefixed tokens so it never touches
    shared/styles.css's own --red/--ink/--border tokens used elsewhere
-   on the page (topbar, nav-rail, modal). */
+   on the page (topbar, nav-rail). Student and admin get two entirely
+   separate views (#studentView / #adminView, toggled in campusjobs.js),
+   matching the same split Lost & Found uses — admin-head-row /
+   admin-two-col / admin-left / admin-right / admin-panel / table-* are
+   the same class names lostfound.css uses for its own admin dashboard;
+   reusing them keeps every admin dashboard on the site looking the
+   same, and there's no collision risk since each page only loads its
+   own page CSS. */
 :root{
   --cj-accent:#7E1A14; --cj-accent-dark:#5E120E; --cj-tint:#FBEDEC; --cj-tint-border:#F1D3D0; --cj-chip:#F1F1F1;
 }
@@ -67,15 +74,9 @@
 .cj-pay small{font-size:12px;font-weight:500;color:var(--muted);}
 .cj-meta{display:flex;flex-wrap:wrap;align-items:center;gap:11px;}
 .cj-badge{font-size:12px;font-weight:700;padding:4px 9px;border-radius:999px;background:var(--cj-tint);color:var(--cj-accent);}
-.cj-status-tag{font-size:10.5px;font-weight:800;padding:3px 8px;border-radius:6px;}
-.cj-status-tag.open{background:var(--green-tint);color:var(--green);}
-.cj-status-tag.closed{background:#F0F0F2;color:var(--muted-2);}
 .cj-bm{width:36px;height:36px;flex:none;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--muted);display:flex;align-items:center;justify-content:center;}
 .cj-bm[aria-pressed="true"]{border-color:var(--cj-tint-border);background:var(--cj-tint);color:var(--cj-accent);}
 .cj-bm[aria-pressed="true"] svg{fill:currentColor;}
-.cj-admin-btn{width:32px;height:32px;flex:none;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--muted);display:flex;align-items:center;justify-content:center;}
-.cj-admin-btn:hover{background:var(--bg);}
-.cj-admin-btn.danger:hover{background:var(--red-tint);color:var(--red);}
 .cj-empty{background:var(--surface);border:1px dashed var(--border);border-radius:var(--r-lg);padding:34px 18px;text-align:center;}
 
 .cj-details{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;padding:14px;border-radius:10px;background:var(--bg);border:1px solid var(--border);}
@@ -108,14 +109,42 @@
 .cj-field input,.cj-field select,.cj-field textarea{width:100%;border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:13.5px;font-family:inherit;color:var(--ink);}
 .cj-field input:focus,.cj-field select:focus,.cj-field textarea:focus{outline:none;border-color:var(--cj-accent);}
 .cj-field textarea{resize:vertical;min-height:60px;}
-.cj-field-row{display:flex;gap:10px;}
-.cj-field-row .cj-field{flex:1;}
 
-.modal-card{width:560px;max-width:100%;max-height:92vh;overflow-y:auto;}
-.modal-detail h2{margin:4px 0 16px;font-weight:700;font-size:19px;}
+/* ---------- admin dashboard (same shape as lostfound.css's admin view) ---------- */
+.admin-head-row{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:20px;flex-wrap:wrap;}
+.admin-head-row h1{font-size:22px;font-weight:700;}
+.admin-head-row p{margin-top:5px;font-size:13.5px;color:var(--muted);}
+.admin-head-row .cj-stats{min-width:280px;}
+
+.admin-two-col{display:flex;gap:18px;align-items:flex-start;}
+.admin-left{width:320px;flex-shrink:0;}
+.admin-right{flex:1;min-width:0;}
+.admin-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--shadow-card);padding:18px 20px;}
+.admin-panel h2{font-size:15px;font-weight:700;margin-bottom:14px;}
+
+.table-toolbar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center;}
+.table-toolbar select{border:1px solid var(--border);border-radius:8px;padding:9px 11px;font-size:12.5px;font-family:inherit;color:var(--ink);background:#fff;}
+.table-toolbar input[type=text]{flex:1;min-width:160px;border:1px solid var(--border);border-radius:8px;padding:9px 12px;font-size:12.5px;font-family:inherit;color:var(--ink);background:#fff;}
+
+.table-wrapper{overflow:auto;border:1px solid var(--border);border-radius:var(--r-md);}
+.admin-table{width:100%;border-collapse:collapse;font-size:12.5px;min-width:700px;table-layout:fixed;}
+.admin-table th{text-align:left;color:var(--muted-2);text-transform:uppercase;font-size:10px;letter-spacing:.03em;font-family:'Barlow',sans-serif;padding:10px 12px;border-bottom:1px solid var(--border);background:var(--bg);white-space:nowrap;}
+.admin-table td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:middle;}
+.admin-table tr:last-child td{border-bottom:none;}
+.admin-table td.cj-ellipsis{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.admin-row-actions{display:flex;gap:6px;}
+.empty-table{text-align:center;color:var(--muted-2);padding:24px 10px!important;}
+.cj-status-tag{font-size:10.5px;font-weight:800;padding:3px 8px;border-radius:6px;white-space:nowrap;}
+.cj-status-tag.open{background:var(--green-tint);color:var(--green);}
+.cj-status-tag.closed{background:#F0F0F2;color:var(--muted-2);}
+.cj-admin-btn{width:28px;height:28px;flex:none;border-radius:7px;border:1px solid var(--border);background:var(--surface);color:var(--muted);display:inline-flex;align-items:center;justify-content:center;}
+.cj-admin-btn:hover{background:var(--bg);}
+.cj-admin-btn.danger:hover{background:var(--red-tint);color:var(--red);}
 
 @media (max-width:900px){
   .cj-cols{flex-direction:column;}
+  .admin-two-col{flex-direction:column;}
+  .admin-left{width:100%;}
 }
 @media (max-width:720px){
   .app-shell{flex-direction:column;}

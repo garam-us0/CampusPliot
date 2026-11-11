@@ -1,6 +1,8 @@
 /* Campuspilot — CAMPUS JOBS page logic: a real job board. Students
-   search/filter, save, view details inline and apply; admins post,
-   open/close and delete listings. Everything here is persisted in
+   search/filter, save, view details inline and apply; admins get a
+   separate dashboard (Post New Job + a management table) to publish,
+   open/close and delete listings — mirroring Lost & Found's
+   #studentView/#adminView split. Everything here is persisted in
    localStorage (see shared/store.js) — applications never advance past
    "Submitted" because there's no real review backend behind this
    prototype to move them further; that's shown as-is rather than
@@ -34,17 +36,26 @@ var isAdmin = false;
 var cjCatFilter = 'all';
 var cjQuery = '';
 var cjOpenDetails = {}; // job id -> bool, UI-only, not persisted
+var cjAdminQuery = '';
+var cjAdminStatus = 'all';
 
 var CJ_STEPS = ['Submitted','Reviewed','Interview','Offer'];
 
+/* ---------------- role gate ---------------- */
 function cjApplyAdmin(){
-  document.getElementById('fhSub').textContent = isAdmin
-    ? 'Post new listings and manage which jobs stay open.'
-    : 'On-campus positions at the Utah Asia Campus · Fall Semester 2026';
-  document.getElementById('cjPostBtn').classList.toggle('hidden', !isAdmin);
-  cjRenderJobs();
+  document.getElementById('cjCrumb').textContent = isAdmin ? 'Campus Jobs — Admin' : 'Campus Jobs';
+  document.getElementById('studentView').classList.toggle('hidden', isAdmin);
+  document.getElementById('adminView').classList.toggle('hidden', !isAdmin);
+  if(isAdmin){
+    cjRenderAdmin();
+  } else {
+    cjRenderChips();
+    cjRenderJobs();
+    cjRenderSide();
+  }
 }
 
+/* ---------------- student: search, filters, job list ---------------- */
 function cjRenderChips(){
   document.getElementById('chips').innerHTML = CJ_CATS.map(function(c){
     return '<button type="button" class="cj-chip" aria-pressed="'+(cjCatFilter===c.id)+'" onclick="cjSetCat(\''+c.id+'\')">'+c.label+'</button>';
@@ -99,7 +110,7 @@ function cjRenderJobs(){
   var list = cjJobs.filter(function(j){
     var catOk = cjCatFilter === 'all' || j.cat === cjCatFilter;
     var qOk = !q || (j.title+' '+j.dept).toLowerCase().indexOf(q) !== -1;
-    var visOk = isAdmin || j.status === 'open';
+    var visOk = j.status === 'open'; // students only ever see open listings — admin manages everything via its own table
     return catOk && qOk && visOk;
   }).sort(function(a,b){ return b.id - a.id; });
 
@@ -108,7 +119,7 @@ function cjRenderJobs(){
   if(!list.length){
     document.getElementById('jobs').innerHTML =
       '<div class="cj-empty"><div style="font-size:15px;font-weight:700;margin-bottom:5px;">No positions match</div>'
-    + '<div class="muted">Try another keyword or choose "All Jobs".' + (isAdmin ? ' Use "Post Job" to add a listing.' : '') + '</div></div>';
+    + '<div class="muted">Try another keyword or choose "All Jobs".</div></div>';
     cjRenderStats();
     return;
   }
@@ -131,17 +142,7 @@ function cjRenderJobs(){
 
     var applyBtn = applied
       ? '<button type="button" class="cj-btn cj-btn-sm" disabled>Applied</button>'
-      : (j.status==='open'
-        ? '<button type="button" class="cj-btn cj-btn-primary cj-btn-sm" onclick="cjApplyToJob('+j.id+')">Apply</button>'
-        : '<button type="button" class="cj-btn cj-btn-sm" disabled>Closed</button>');
-
-    var adminBtns = isAdmin
-      ? '<button type="button" class="cj-admin-btn" title="'+(j.status==='open'?'Close listing':'Reopen listing')+'" onclick="cjToggleStatus('+j.id+')">'
-        + '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">'+(j.status==='open'?'<circle cx="12" cy="12" r="9"/><path d="M8 12h8"/>':'<path d="M5 13l4 4L19 7"/>')+'</svg></button>'
-      + '<button type="button" class="cj-admin-btn danger" title="Delete listing" onclick="cjDelete('+j.id+')">'
-        + '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6l-12 12"/></svg></button>'
-      : '';
-    var statusTag = isAdmin ? '<span class="cj-status-tag '+j.status+'">'+j.status.toUpperCase()+'</span>' : '';
+      : '<button type="button" class="cj-btn cj-btn-primary cj-btn-sm" onclick="cjApplyToJob('+j.id+')">Apply</button>';
 
     return ''
     + '<article class="cj-card cj-job">'
@@ -151,8 +152,6 @@ function cjRenderJobs(){
           + '<div><h3>'+j.title+'</h3><div class="muted">'+j.dept+'</div></div>'
         + '</div>'
         + '<div class="cj-job-actions">'
-          + statusTag
-          + adminBtns
           + '<button type="button" class="cj-bm" aria-pressed="'+saved+'" aria-label="'+(saved?'Remove from saved':'Save job')+'" onclick="cjToggleSave('+j.id+')">'
             + '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></button>'
         + '</div>'
@@ -201,22 +200,6 @@ function cjApplyToJob(id){
   showToast('Application submitted for "'+j.title+'" — the department will follow up by email.');
 }
 
-function cjToggleStatus(id){
-  var j = cjJobs.filter(function(x){ return x.id===id; })[0];
-  if(!j) return;
-  j.status = j.status === 'open' ? 'closed' : 'open';
-  cjPersist();
-  cjRenderJobs();
-  showToast('"'+j.title+'" marked '+j.status.toUpperCase()+'.');
-}
-function cjDelete(id){
-  var j = cjJobs.filter(function(x){ return x.id===id; })[0];
-  cjJobs = cjJobs.filter(function(x){ return x.id !== id; });
-  cjPersist();
-  cjRenderJobs();
-  showToast(j ? 'Deleted "'+j.title+'".' : 'Listing deleted.');
-}
-
 function cjRenderSide(){
   document.getElementById('apps').innerHTML = cjApps.length
     ? cjApps.map(function(a){
@@ -247,13 +230,66 @@ function cjRenderSide(){
     : '<div class="muted" style="font-size:13px;">No upcoming deadlines.</div>';
 }
 
-function cjOpenPost(){
-  ['cjFormTitle','cjFormDept','cjFormLocation','cjFormPay','cjFormHours','cjFormDeadline','cjFormDesc','cjFormTodo','cjFormReq'].forEach(function(id){
-    document.getElementById(id).value='';
-  });
-  document.getElementById('post-modal').classList.remove('hidden');
+/* ---------------- admin: dashboard stats, post form, management table ---------------- */
+function cjSetAdminFilter(v){ cjAdminStatus = v; cjRenderAdmin(); }
+function cjSetAdminQuery(v){ cjAdminQuery = v; cjRenderAdmin(); }
+
+function cjRenderAdminStats(){
+  document.getElementById('adminTotal').textContent = cjJobs.length;
+  document.getElementById('adminOpen').textContent = cjJobs.filter(function(j){ return j.status==='open'; }).length;
+  document.getElementById('adminClosed').textContent = cjJobs.filter(function(j){ return j.status==='closed'; }).length;
 }
-function cjClosePost(){ document.getElementById('post-modal').classList.add('hidden'); }
+
+function cjRenderAdmin(){
+  cjRenderAdminStats();
+  var q = cjAdminQuery.toLowerCase().trim();
+  var list = cjJobs.filter(function(j){
+    var statusOk = cjAdminStatus === 'all' || j.status === cjAdminStatus;
+    var qOk = !q || (j.title+' '+j.dept).toLowerCase().indexOf(q) !== -1;
+    return statusOk && qOk;
+  }).sort(function(a,b){ return b.id - a.id; });
+
+  var body = document.getElementById('adminTableBody');
+  if(!list.length){
+    body.innerHTML = '<tr><td colspan="7" class="empty-table">No listings found.</td></tr>';
+    return;
+  }
+  body.innerHTML = list.map(function(j){
+    var cat = cjCatMeta(j.cat);
+    var applicants = cjApps.filter(function(a){ return a.jobId === j.id; }).length;
+    var dlText = j.deadlineDate ? cjFormatDate(j.deadlineDate) : 'Open until filled';
+    var toggleBtn = '<button class="cj-admin-btn" title="'+(j.status==='open'?'Close listing':'Reopen listing')+'" onclick="cjToggleStatus('+j.id+')">'
+      + '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">'+(j.status==='open'?'<circle cx="12" cy="12" r="9"/><path d="M8 12h8"/>':'<path d="M5 13l4 4L19 7"/>')+'</svg></button>';
+    var deleteBtn = '<button class="cj-admin-btn danger" title="Delete listing" onclick="cjDelete('+j.id+')">'
+      + '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6l-12 12"/></svg></button>';
+    return '<tr>'
+      + '<td><span class="cj-status-tag '+j.status+'">'+j.status.toUpperCase()+'</span></td>'
+      + '<td class="cj-ellipsis">'+j.title+'</td>'
+      + '<td class="cj-ellipsis">'+cat.label+'</td>'
+      + '<td class="cj-ellipsis">'+j.dept+'</td>'
+      + '<td class="cj-ellipsis">'+dlText+'</td>'
+      + '<td>'+applicants+'</td>'
+      + '<td><div class="admin-row-actions">'+toggleBtn+deleteBtn+'</div></td>'
+    + '</tr>';
+  }).join('');
+}
+
+function cjToggleStatus(id){
+  var j = cjJobs.filter(function(x){ return x.id===id; })[0];
+  if(!j) return;
+  j.status = j.status === 'open' ? 'closed' : 'open';
+  cjPersist();
+  cjRenderAdmin();
+  showToast('"'+j.title+'" marked '+j.status.toUpperCase()+'.');
+}
+function cjDelete(id){
+  var j = cjJobs.filter(function(x){ return x.id===id; })[0];
+  cjJobs = cjJobs.filter(function(x){ return x.id !== id; });
+  cjPersist();
+  cjRenderAdmin();
+  showToast(j ? 'Deleted "'+j.title+'".' : 'Listing deleted.');
+}
+
 function cjSubmitPost(){
   var title = document.getElementById('cjFormTitle').value.trim();
   if(!title){ showToast('Please enter a job title.'); return; }
@@ -274,12 +310,13 @@ function cjSubmitPost(){
     need: reqText ? reqText.split('\n').filter(function(l){ return l.trim(); }) : []
   });
   cjPersist();
-  cjClosePost();
-  cjSetCat('all');
+  ['cjFormTitle','cjFormDept','cjFormLocation','cjFormPay','cjFormHours','cjFormDeadline','cjFormDesc','cjFormTodo','cjFormReq'].forEach(function(id){
+    document.getElementById(id).value='';
+  });
+  document.getElementById('cjFormCat').value = 'ta';
+  cjRenderAdmin();
   showToast('"'+title+'" published — now visible to all students.');
 }
-
-document.addEventListener('keydown', function(e){ if(e.key === 'Escape') cjClosePost(); });
 
 cjRenderChips();
 cjRenderJobs();
